@@ -1,0 +1,683 @@
+================================================================================
+MANUAL PARA LEVANTAR EL PROYECTO Y ARMAR LA PRESENTACION (PPT)
+Prediccion de Incumplimiento de Prestamos - ITY1101
+================================================================================
+
+Este documento tiene dos partes:
+  PARTE 1: Como levantar el proyecto en tu computadora (paso a paso)
+  PARTE 2: Guia slide por slide para armar la PPT (con todo explicado
+           para que se entienda sin saber nada tecnico)
+
+
+================================================================================
+PARTE 1: COMO LEVANTAR EL PROYECTO
+================================================================================
+
+Necesitas instalar 2 cosas antes de empezar:
+
+  1. Python (el lenguaje de programacion que usa el proyecto)
+     Descarga: https://www.python.org/downloads/
+     IMPORTANTE: cuando lo instales, marca la casilla "Add Python to PATH"
+
+  2. Git (programa para descargar el codigo del repositorio)
+     Descarga: https://git-scm.com/downloads
+     Instalar con las opciones por defecto, no hay que cambiar nada.
+
+Una vez instalados, sigue estos pasos:
+
+  PASO 1 - Abrir la terminal:
+     En Windows: buscar "PowerShell" o "CMD" en el menu de inicio y abrirlo.
+     Te aparece una ventana negra donde puedes escribir comandos.
+
+  PASO 2 - Descargar el proyecto:
+     Escribir estos comandos en la terminal (uno por uno, dando Enter):
+
+     git clone <url-del-repositorio>
+     cd GestionDeDatos
+
+     "git clone" descarga todo el proyecto a tu computadora.
+     "cd" entra a la carpeta del proyecto.
+
+  PASO 3 - Crear un entorno virtual:
+     Esto es como crear una "burbuja" para que las librerias del proyecto
+     no se mezclen con otras cosas de tu computadora. Es opcional pero
+     recomendado.
+
+     python -m venv venv
+
+     Despues activarlo:
+       En Windows:    venv\Scripts\activate
+       En Mac/Linux:  source venv/bin/activate
+
+     Sabes que funciono si ves (venv) al inicio de la linea en la terminal.
+
+  PASO 4 - Instalar las librerias que usa el proyecto:
+     pip install -r 02_Ingesta_y_Pipeline/requirements.txt
+
+     "pip" es el instalador de librerias de Python.
+     "requirements.txt" es un archivo que lista todo lo que necesita:
+       - pandas (para leer y manipular datos, como un Excel potente)
+       - scikit-learn (para los modelos de inteligencia artificial)
+       - matplotlib y seaborn (para generar graficos)
+       - pytest (para ejecutar pruebas automatizadas)
+
+  PASO 5 - Ejecutar el proyecto:
+     python 02_Ingesta_y_Pipeline/analisis.py
+
+     Esto corre TODO el proyecto de principio a fin. Vas a ver en la
+     terminal como va pasando por cada etapa. Tarda menos de 5 segundos.
+
+     Cuando termine, se crea la carpeta "03_EDA_Resultados/" con estos archivos:
+       - log_ejecucion.log         -> registro detallado de todo lo que paso
+       - datos_limpios.csv         -> los datos ya procesados y limpios
+       - prestamos.db              -> base de datos con los datos cargados
+       - reporte.txt               -> resumen con numeros y resultados
+       - distribucion_target.png   -> grafico: cuantos pagaron vs no pagaron
+       - distribucion_edad.png     -> grafico: edades de los solicitantes
+       - tasa_interes_por_status.png -> grafico: tasa de interes segun estado
+       - arbol_decision.png        -> grafico: como el modelo toma decisiones
+       - equidad_genero.png        -> grafico: si el modelo es justo por genero
+
+  PASO 6 - Ejecutar las pruebas automatizadas (tests):
+     pytest 02_Ingesta_y_Pipeline/test_analisis.py -v
+
+     Esto verifica que los datos estan bien. Deberian salir 5 tests
+     en verde (PASSED). Si sale algo en rojo, algo fallo.
+
+  PASO 7 - Ver el dashboard (pagina web visual):
+     Ir a la carpeta del proyecto y abrir "04_Pagina_Web/dashboard.html"
+     Se abre en el navegador (Chrome, Firefox, Edge, etc.)
+     Ahi esta TODO explicado visualmente con graficos.
+
+  SI ALGO FALLA:
+     Probar estos comandos:
+       python -m pip install --upgrade pip
+       python -m pip install -r 02_Ingesta_y_Pipeline/requirements.txt
+     Si sigue fallando, verificar que Python esta instalado:
+       python --version
+     Deberia mostrar algo como "Python 3.12.x"
+
+
+================================================================================
+PARTE 2: GUIA PARA ARMAR LA PPT (slide por slide)
+================================================================================
+
+La evaluacion pide: presentacion de 15 min + demo en vivo + preguntas.
+Aca abajo esta todo lo que hay que poner en cada slide.
+Cada termino tecnico esta explicado para que se entienda sin saber nada.
+
+
+------------------------------------------------------------------------
+SLIDE 1 - PORTADA
+------------------------------------------------------------------------
+Titulo: Prediccion de Incumplimiento de Prestamos
+Subtitulo: Pipeline DataOps - Caso 4
+Materia: Gestion de Datos para IA (ITY1101)
+Integrantes: [Nombre 1] - [Nombre 2] - [Nombre 3]
+Fecha: [fecha de presentacion]
+
+
+------------------------------------------------------------------------
+SLIDE 2 - EL PROBLEMA
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  "Un banco pierde plata cuando le presta a alguien que despues no paga."
+
+  El problema concreto:
+    - El banco recibe miles de solicitudes de prestamos
+    - Necesita decidir a quien aprobar y a quien no
+    - Hoy eso se hace manual o con reglas basicas, y falla seguido
+
+  Nuestra solucion:
+    - Tomamos datos historicos de 45,000 solicitudes de prestamos
+    - Construimos un sistema automatizado que analiza esos datos
+    - El sistema aprende de los patrones y predice quien va a pagar
+      y quien no
+
+  Por que DataOps y no hacerlo "a mano":
+    (DataOps = metodologia para gestionar datos de forma automatizada)
+
+    FORMA TRADICIONAL:
+      - Alguien descarga datos a mano
+      - Los limpia en Excel
+      - Hace un grafico
+      - Lo manda por mail
+      - Si cambian los datos, hay que repetir todo desde cero
+      - No queda registro de que se hizo
+
+    CON DATAOPS (lo que hicimos):
+      - Todo esta automatizado: se ejecuta con un solo comando
+      - Si cambian los datos, se reprocesa solo
+      - Queda registro (logs) de cada paso
+      - Se monitorea con indicadores (KPIs) que avisan si algo falla
+      - Cualquiera puede reproducirlo
+
+
+------------------------------------------------------------------------
+SLIDE 3 - EL PIPELINE (FLUJO GENERAL)
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que es un pipeline:
+    Es una cadena de pasos que se ejecutan en orden, uno tras otro,
+    como una linea de ensamblaje en una fabrica. Los datos entran
+    "crudos" por un lado y salen "listos para usar" por el otro.
+
+  Mostrar este flujo (se puede hacer con flechas o cajitas):
+
+    DATOS CRUDOS (CSV)
+        |
+        v
+    [1. INGESTA]      -> Leer los datos
+        |
+        v
+    [2. LIMPIEZA]     -> Corregir problemas
+        |
+        v
+    [3. VALIDACION]   -> Verificar que todo esta bien
+        |
+        v
+    [4. CARGA]        -> Guardar los datos limpios
+        |
+        v
+    DATOS LISTOS (CSV limpio + Base de datos)
+        |
+        v
+    [ANALISIS Y MODELOS DE IA]
+
+  Dato importante: cada etapa depende de la anterior.
+  Si la ingesta falla, no se puede limpiar.
+  Todo queda registrado en un archivo de log.
+
+
+------------------------------------------------------------------------
+SLIDE 4 - ETAPA 1: INGESTA DE DATOS
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que significa "ingesta":
+    Es simplemente LEER los datos desde el archivo original y
+    cargarlos en el programa para poder trabajar con ellos.
+    Como cuando abris un Excel: el archivo esta en el disco, y al
+    abrirlo lo cargas en memoria.
+
+  Como se hizo:
+    - El archivo original se llama "loan_data.csv"
+    - CSV significa "valores separados por comas": es un archivo de
+      texto plano donde cada linea es un registro y los campos estan
+      separados por comas
+    - Se uso la libreria "pandas" de Python, que es como un Excel
+      pero dentro de Python, mucho mas potente
+    - El comando que lo hace es: pd.read_csv('datos/loan_data.csv')
+
+  Resultado:
+    - Se cargaron 45,000 filas (cada fila = 1 solicitud de prestamo)
+    - Con 14 columnas (cada columna = 1 dato del solicitante)
+    - Tiempo: 0.05 segundos
+
+  Por que se eligio pandas como herramienta:
+    - Es la herramienta estandar en la industria para datos en Python
+    - Puede manejar millones de filas
+    - Tiene funciones integradas para limpiar, filtrar y transformar datos
+
+
+------------------------------------------------------------------------
+SLIDE 5 - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que significa "limpieza de datos":
+    Los datos del mundo real vienen con problemas: celdas vacias,
+    numeros que no tienen sentido (una persona de 200 anos), texto
+    que la computadora no puede procesar. La limpieza detecta y
+    corrige esos problemas.
+
+  Se hicieron 3 pasos:
+
+  PASO 1 - Buscar celdas vacias (valores nulos):
+    Se reviso columna por columna si habia celdas sin datos.
+    Resultado: NO habia ninguna celda vacia. Cero nulos.
+
+  PASO 2 - Eliminar datos que no tienen sentido (outliers):
+    "Outlier" = un dato que se sale del rango logico.
+    Se aplicaron estas reglas:
+      - Si la edad es menor a 18 -> se elimina (un menor no puede
+        pedir un credito)
+      - Si la edad es mayor a 100 -> se elimina (probablemente es un
+        error de carga)
+      - Si el ingreso es negativo -> se elimina (es imposible)
+      - Si la experiencia laboral es negativa -> se elimina (es imposible)
+
+    Resultado: SE ELIMINARON 7 FILAS.
+    Las 7 tenian edades fuera de rango (menores de 18 o mayores de 100).
+    No se encontraron ingresos negativos ni experiencias negativas.
+    El dataset quedo con 44,993 filas.
+
+  PASO 3 - Convertir texto a numeros (codificacion):
+    Los modelos de inteligencia artificial SOLO entienden numeros.
+    No pueden leer "male" o "female". Entonces se convirtio:
+      - female -> 0, male -> 1
+      - High School -> 3, Bachelor -> 1, Master -> 4, etc.
+      - No -> 0, Yes -> 1
+    Se uso una herramienta llamada "LabelEncoder" de scikit-learn.
+
+  Nota sobre la tasa de interes:
+    La documentacion del dataset decia que la tasa de interes estaba
+    en "puntos basicos" (ej: 1602 significaria 16.02%). Pero al
+    revisar los datos reales, los valores ya venian en porcentaje
+    (de 5.42% a 20.0%). Asi que NO se necesito hacer ninguna conversion.
+
+
+------------------------------------------------------------------------
+SLIDE 6 - ETAPA 3: VALIDACION
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que significa "validacion":
+    Despues de limpiar los datos, hay que VERIFICAR que quedaron bien
+    antes de usarlos. Es como un control de calidad en una fabrica:
+    se revisa que el producto final cumple las especificaciones.
+
+  Se hicieron 2 tipos de validacion:
+
+  VALIDACION ESTRUCTURAL (revisar la "forma" de los datos):
+    - Estan las 14 columnas que deberian estar? -> SI, todas presentes
+    - Quedan celdas vacias? -> NO, cero nulos
+    - Cuantas filas hay? -> 44,993
+    - Cuantas columnas? -> 14
+
+  VALIDACION SEMANTICA (revisar que los valores "tengan sentido"):
+    "Semantica" = que tenga significado logico.
+    - Las edades estan entre 18 y 100? -> SI (la menor es 20, la mayor 94)
+    - Los ingresos son positivos? -> SI (el menor es $8,000)
+    - El puntaje crediticio esta en el rango normal (300-850)?
+      -> SI (el menor es 390, el mayor 784)
+    - La tasa de interes esta entre 0% y 100%?
+      -> SI (de 5.42% a 20.0%)
+    - La variable que queremos predecir (loan_status) solo tiene
+      valores 0 y 1? -> SI
+    - El dataset esta 100% completo (sin huecos)? -> SI
+
+  Resultado: 0 ERRORES. Todo paso correctamente. Datos listos.
+
+
+------------------------------------------------------------------------
+SLIDE 7 - ETAPA 4: CARGA
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que significa "carga":
+    Guardar los datos ya limpios y validados en un lugar permanente,
+    para poder usarlos despues sin tener que repetir todo el proceso.
+    Es como guardar el archivo final despues de editarlo.
+
+  Se guardaron en 2 formatos:
+
+    1. Archivo CSV limpio (resultados/datos_limpios.csv):
+       Un archivo de texto que se puede abrir en Excel o Google Sheets.
+       Contiene las 44,993 filas ya procesadas.
+
+    2. Base de datos SQLite (resultados/prestamos.db):
+       SQLite es una base de datos liviana que se guarda en un solo archivo.
+       Se creo una tabla llamada "prestamos" con las 44,993 filas.
+       Sirve para hacer consultas, por ejemplo:
+         "Dame todos los que incumplieron y ganan mas de $50,000"
+
+  Se verifico que las 44,993 filas se cargaron correctamente.
+  Tiempo de carga: 0.24 segundos.
+
+
+------------------------------------------------------------------------
+SLIDE 8 - ANALISIS EXPLORATORIO DE DATOS
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que es un "analisis exploratorio" (a veces le dicen "EDA"):
+    Antes de entrenar un modelo de IA, hay que ENTENDER los datos.
+    Se generan graficos y estadisticas para ver patrones, detectar
+    cosas raras y hacerse una idea general de como son los datos.
+    Es como "conocer" la informacion antes de trabajar con ella.
+
+  Estadisticas clave que encontramos:
+    - La edad promedio de los solicitantes es 27.7 anos
+    - El ingreso mas bajo es $8,000
+    - La tasa de interes promedio es 11.01%
+    - De 44,993 solicitudes: 34,993 pagaron (78%) y 10,000 no pagaron (22%)
+
+  Graficos generados (poner las imagenes de la carpeta resultados/):
+
+    GRAFICO 1 - distribucion_target.png
+    "Cuantos pagaron vs cuantos no pagaron"
+      Muestra que la mayoria de la gente SI paga su prestamo (78%).
+      Solo el 22% incumple. Hay un desbalance: hay muchos mas casos
+      de gente que paga que de gente que no paga.
+
+    GRAFICO 2 - distribucion_edad.png
+    "Edades de los solicitantes"
+      La mayoria tiene entre 20 y 30 anos. Hay pocos solicitantes
+      mayores de 50. Es gente joven la que mas pide prestamos.
+
+    GRAFICO 3 - tasa_interes_por_status.png
+    "Tasa de interes segun si pago o no pago"
+      Los que NO pagaron (incumplimiento) tenian tasas de interes
+      mas altas. Tiene sentido: el banco les cobra mas porque son
+      mas riesgosos, y efectivamente terminan sin pagar.
+
+
+------------------------------------------------------------------------
+SLIDE 9 - MODELOS DE CLASIFICACION (INTELIGENCIA ARTIFICIAL)
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que es un "modelo de clasificacion":
+    Es un programa que aprende de datos del pasado para predecir
+    el futuro. En este caso, ve miles de ejemplos de gente que
+    pidio prestamos (algunos pagaron, otros no) y aprende a
+    distinguir los patrones. Despues, cuando llega un solicitante
+    nuevo, puede predecir si va a pagar o no.
+
+  Como se dividieron los datos:
+    No se puede evaluar un modelo con los mismos datos que uso
+    para aprender (seria como hacer trampa en una prueba).
+    Entonces se separaron los datos:
+      - 70% para ENTRENAMIENTO (31,495 filas) -> el modelo aprende con estos
+      - 30% para PRUEBA (13,498 filas) -> se evalua con estos que nunca vio
+
+  Se probaron 2 modelos distintos:
+
+    MODELO 1 - ARBOL DE DECISION (el ganador):
+      Como funciona: es como un diagrama de flujo con preguntas.
+      Ejemplo: "La tasa de interes es mayor a 13%?"
+        -> Si: "El ingreso es menor a $30,000?"
+          -> Si: PREDICE INCUMPLIMIENTO
+          -> No: "Tiene incumplimientos previos?"
+            -> Si: PREDICE INCUMPLIMIENTO
+            -> No: PREDICE QUE VA A PAGAR
+        -> No: PREDICE QUE VA A PAGAR
+
+      Se limito a 5 niveles de preguntas para que no se complique
+      demasiado (si le pones muchos niveles, memoriza los datos en
+      vez de aprender patrones).
+
+      Resultado: acerto el 91.28% de las veces.
+
+    MODELO 2 - REGRESION LOGISTICA:
+      Como funciona: usa una formula matematica que calcula un
+      porcentaje de probabilidad. Por ejemplo, dice "este solicitante
+      tiene 73% de probabilidad de incumplir". Si el porcentaje es
+      mayor a 50%, predice que va a incumplir.
+
+      Resultado: acerto el 88.54% de las veces.
+
+    GANADOR: Arbol de Decision (91.28% vs 88.54%)
+    Ademas, el arbol se puede VISUALIZAR (poner la imagen
+    arbol_decision.png) lo que permite explicar POR QUE el modelo
+    tomo cada decision. Esto se llama "interpretabilidad" y es
+    un requisito del caso.
+
+  Que significan los numeros (para las preguntas del profesor):
+
+    "Accuracy" (precision general) = 91.28%
+      De cada 100 predicciones, 91 son correctas.
+
+    "Precision" = 0.88 para incumplidos
+      De todos los que el modelo dijo "este va a incumplir",
+      el 88% de verdad incumplio. Solo se equivoco en el 12%.
+
+    "Recall" = 0.71 para incumplidos
+      De todos los que REALMENTE incumplieron, el modelo logro
+      detectar al 71%. Se le escapo el 29% restante.
+      Por que no es mas alto? Porque el modelo prefiere no rechazar
+      clientes buenos (ser preciso) antes que intentar detectar a
+      todos los malos (y equivocarse mas).
+
+
+------------------------------------------------------------------------
+SLIDE 10 - EQUIDAD (QUE EL MODELO NO DISCRIMINE)
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Por que se analiza esto:
+    Un modelo de IA NO puede funcionar mejor para hombres que para
+    mujeres (o al reves). Si lo hace, estaria discriminando.
+    La evaluacion pide especificamente que el modelo sea "justo".
+
+  Que se hizo:
+    Se midio la precision del modelo por separado para hombres y
+    para mujeres, y se comparo.
+
+  Resultados:
+    - Hombres: el modelo acerto el 91.54% (con 7,506 casos de prueba)
+    - Mujeres: el modelo acerto el 90.95% (con 5,992 casos de prueba)
+    - Diferencia: solo 0.59 puntos porcentuales
+
+  Criterio: si la diferencia es menor al 5%, se considera que
+  el modelo es equitativo (justo).
+
+  0.59% es MUCHO menor que 5%, asi que el modelo NO discrimina
+  por genero. Funciona practicamente igual para ambos.
+
+  Poner la grafica equidad_genero.png.
+
+
+------------------------------------------------------------------------
+SLIDE 11 - KPIs DE MONITOREO DEL PIPELINE
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Que es un KPI:
+    KPI = "Key Performance Indicator" = Indicador Clave de Rendimiento.
+    Son numeros que te dicen si el sistema esta funcionando bien o mal.
+    Como los indicadores del tablero de un auto (temperatura, velocidad,
+    combustible). Si un numero se sale de lo normal, sabes que algo anda mal.
+
+  Los KPIs que registra nuestro pipeline:
+
+    LATENCIA (cuanto tarda cada etapa):
+      Tiempo total: 0.35 segundos
+        - Ingesta: 0.05s
+        - Limpieza: 0.06s
+        - Validacion: 0.00s
+        - Carga: 0.24s
+      Si de repente la ingesta tarda 10 segundos en vez de 0.05,
+      algo esta fallando (archivo corrupto, disco lleno, etc.)
+
+    COMPLETITUD: 100%
+      Que porcentaje de los datos esta completo (sin celdas vacias).
+      Si baja, significa que estan llegando datos incompletos.
+
+    FILAS PROCESADAS: 44,993
+    FILAS DESCARTADAS: 7
+      Si de repente se descartan miles de filas, los datos de origen
+      estan llegando con muchos errores.
+
+    ERRORES DE VALIDACION: 0
+      Si sube, significa que los datos no cumplen las reglas de negocio.
+
+
+------------------------------------------------------------------------
+SLIDE 12 - PLAN DE SEGURIDAD
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Ley que aplica:
+    Ley 19.628 de Proteccion de Datos Personales (Chile).
+    Los datos del dataset son ANONIMOS: no se puede identificar
+    a ninguna persona real. En un sistema real (en produccion),
+    se deberian aplicar tecnicas de anonimizacion para proteger
+    la identidad de los solicitantes.
+
+  Control de acceso:
+    El repositorio en GitHub se puede configurar como PRIVADO,
+    para que solo los integrantes del equipo tengan acceso al
+    codigo y a los datos.
+
+  Datos sensibles:
+    Las columnas "person_gender" (genero) y "person_income" (ingreso)
+    son datos sensibles. En un sistema real se deberia:
+    - Cifrar los datos en disco (AES-256 = un tipo de encriptacion
+      muy segura)
+    - Enmascarar los datos para usuarios que no necesitan verlos
+      (ej: mostrar "****" en vez del ingreso real)
+
+  Logs:
+    Los registros de ejecucion (logs) NO contienen datos personales,
+    solo metricas del pipeline (tiempos, cantidades, errores).
+    Esto cumple con el principio de no exponer informacion sensible.
+
+
+------------------------------------------------------------------------
+SLIDE 13 - DEMO EN VIVO
+------------------------------------------------------------------------
+Que hacer durante la demo (5 min aprox):
+
+  1. Tener la terminal abierta en la carpeta del proyecto
+     (todo ya instalado y probado de antes)
+
+  2. Escribir: python 02_Ingesta_y_Pipeline/analisis.py
+     Mostrar como corre etapa por etapa en la terminal.
+     Ir explicando lo que aparece: "aca esta leyendo los datos",
+     "aca elimino 7 filas", "aca esta entrenando el modelo", etc.
+
+  3. Abrir la carpeta resultados/ y mostrar los archivos generados
+
+  4. Abrir dashboard.html en el navegador
+     Recorrer las secciones principales, hacer click en los botones
+     desplegables, mostrar las graficas
+
+  5. Si queda tiempo, abrir resultados/log_ejecucion.log y mostrar
+     que todo queda registrado paso a paso con fecha y hora
+
+  CONSEJOS:
+    - Probar la demo ANTES de la presentacion para asegurarse que todo
+      funciona
+    - Si algo falla en el momento, tener capturas de pantalla de respaldo
+    - No leer la pantalla, explicar con tus palabras lo que se ve
+
+
+------------------------------------------------------------------------
+SLIDE 14 - CONCLUSIONES Y PROXIMOS PASOS
+------------------------------------------------------------------------
+Que poner en la slide:
+
+  Lo que se logro:
+    - Se construyo un pipeline DataOps completo y funcional que se
+      ejecuta con un solo comando
+    - Procesa 45,000 solicitudes de prestamos en menos de 1 segundo
+    - El modelo (Arbol de Decision) acierta el 91.28% de las veces
+    - El modelo es interpretable: se puede explicar cada decision
+      de aprobacion o rechazo con el arbol visual
+    - El modelo es equitativo: no discrimina por genero (diferencia
+      de solo 0.59%)
+    - Todo queda registrado con logs y monitoreo de KPIs
+
+  Que se podria mejorar en el futuro:
+    - Probar con datos reales (estos datos fueron generados
+      sinteticamente, en la vida real los datos son mas sucios)
+    - Agregar alertas automaticas que avisen cuando un KPI se degrade
+      (por ejemplo, si la completitud baja del 95%)
+    - Probar otros modelos como Random Forest o XGBoost para ver si
+      dan mejor resultado
+    - Empaquetar todo en un contenedor Docker para que se pueda
+      instalar en cualquier servidor sin configurar nada
+    - Hacer un dashboard en tiempo real con herramientas como
+      Streamlit o Grafana
+
+
+================================================================================
+PREGUNTAS PROBABLES DEL PROFESOR (CON RESPUESTAS)
+================================================================================
+
+Leelas antes de la presentacion para estar preparado.
+
+---
+
+P: Por que se eligio el Arbol de Decision y no la Regresion Logistica?
+R: Por dos razones. Primero, tiene mejor accuracy: 91.28% vs 88.54%.
+   Segundo, es interpretable, se puede mostrar el arbol con las preguntas
+   que hace el modelo y explicar exactamente por que aprueba o rechaza
+   a alguien. La evaluacion pide que el modelo sea interpretable.
+
+---
+
+P: Por que se descartaron 7 filas? Como sabes que habia que eliminarlas?
+R: Las 7 filas tenian edades menores a 18 o mayores a 100 anos. Un menor
+   de edad no puede solicitar un credito legalmente, y una persona de
+   mas de 100 anos es casi seguro un error de carga. Si los dejabamos,
+   el modelo aprenderia patrones falsos. No habia nulos ni ingresos
+   negativos.
+
+---
+
+P: Que pasa si llegan datos nuevos con celdas vacias?
+R: El pipeline los detecta en la etapa de limpieza con la funcion
+   df.isnull(). Las filas con valores nulos se eliminan automaticamente
+   antes de que lleguen al modelo. Y queda registrado en el log cuantas
+   se eliminaron.
+
+---
+
+P: Que es la validacion estructural vs la semantica?
+R: Estructural revisa la FORMA de los datos: estan las columnas correctas?
+   hay celdas vacias? cuantas filas hay?
+   Semantica revisa el SIGNIFICADO: los numeros tienen sentido? la edad
+   esta en un rango logico? el puntaje crediticio es valido? Es como
+   revisar que un formulario este completo (estructural) vs revisar que
+   lo que escribieron tenga sentido (semantica).
+
+---
+
+P: Es escalable esta solucion? Que pasa si hay millones de datos?
+R: Si, es escalable. pandas puede manejar millones de filas. Si
+   fueran cientos de millones, se podria migrar a herramientas mas
+   potentes como Spark o Dask sin cambiar mucho el codigo. La base
+   de datos SQLite se podria reemplazar por PostgreSQL o MySQL para
+   produccion.
+
+---
+
+P: Que diferencia hay entre accuracy, precision y recall?
+R: Accuracy es el porcentaje general de aciertos (91 de cada 100).
+   Precision: cuando el modelo dice "este va a incumplir", que tan
+   seguido tiene razon (88% de las veces).
+   Recall: de toda la gente que de verdad incumplio, a cuantos logro
+   detectar el modelo (71%). El 29% restante se le escapo.
+
+---
+
+P: Por que el recall es 71% y no mas alto?
+R: Porque hay un equilibrio entre precision y recall. Si el modelo
+   intentara detectar a TODOS los que incumplen, tambien rechazaria
+   a muchos que SI iban a pagar (falsos positivos). Con 71% de recall
+   y 88% de precision, el modelo tiene un buen equilibrio: detecta
+   la mayoria de los riesgosos sin rechazar demasiados buenos clientes.
+
+---
+
+P: Que es DataOps? En que se diferencia de hacer las cosas normalmente?
+R: DataOps es una metodologia que automatiza todo el trabajo con datos.
+   Normalmente alguien descarga los datos, los limpia en Excel, hace
+   un grafico y lo manda por mail. Con DataOps todo eso se hace con un
+   solo comando, queda registrado, se puede repetir exactamente igual,
+   tiene pruebas automaticas y monitoreo. Si cambian los datos, se
+   reprocesa automaticamente.
+
+---
+
+P: Como garantizan que el modelo no discrimina?
+R: Medimos la precision del modelo por separado para hombres y mujeres.
+   La diferencia fue de solo 0.59%, muy por debajo del 5% que se usa
+   como umbral. Eso significa que el modelo predice con la misma
+   precision para ambos generos, no hay sesgo.
+
+---
+
+P: Que herramientas usaron y por que?
+R: Python porque es el lenguaje estandar para datos e IA.
+   pandas para leer y manipular los datos (es como un Excel potente).
+   scikit-learn para los modelos de IA (es la libreria mas usada).
+   matplotlib y seaborn para los graficos.
+   SQLite para la base de datos (es liviana, no necesita instalar nada).
+   pytest para las pruebas automatizadas.
+   GitHub para versionar el codigo y colaborar en equipo.

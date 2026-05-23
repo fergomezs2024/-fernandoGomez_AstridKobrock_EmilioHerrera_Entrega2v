@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Prediccion de Incumplimiento de Prestamos</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #e2e8f0; min-height: 100vh; }
+
+  .header { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-bottom: 1px solid #334155; padding: 28px 32px; }
+  .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+  .header .subtitle { font-size: 0.9rem; color: #94a3b8; }
+  .header .badge { background: #22c55e; color: #000; font-size: 0.7rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; display: inline-block; margin-left: 12px; vertical-align: middle; }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+  /* Intro */
+  .intro { background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%); border: 1px solid #334155; border-radius: 12px; padding: 28px; margin-bottom: 24px; line-height: 1.7; }
+  .intro h2 { font-size: 1.15rem; margin-bottom: 12px; color: #60a5fa; }
+  .intro p { font-size: 0.9rem; color: #cbd5e1; margin-bottom: 10px; }
+  .intro .context-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 16px; }
+  .intro .context-item { background: rgba(0,0,0,0.25); border-radius: 8px; padding: 14px; }
+  .intro .context-item .ci-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 4px; }
+  .intro .context-item .ci-value { font-size: 0.95rem; font-weight: 600; }
+
+  /* KPI Cards */
+  .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .kpi { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 18px; text-align: center; transition: transform 0.2s; }
+  .kpi:hover { transform: translateY(-2px); border-color: #3b82f6; }
+  .kpi .value { font-size: 1.8rem; font-weight: 700; color: #3b82f6; }
+  .kpi .value.green { color: #22c55e; }
+  .kpi .value.amber { color: #f59e0b; }
+  .kpi .label { font-size: 0.75rem; color: #94a3b8; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  /* Section */
+  .section { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 28px; margin-bottom: 20px; }
+  .section h2 { font-size: 1.1rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .section h2 .dot { width: 8px; height: 8px; border-radius: 50%; background: #3b82f6; flex-shrink: 0; }
+  .section .desc { font-size: 0.88rem; color: #94a3b8; line-height: 1.6; margin-bottom: 18px; }
+  .section .desc strong { color: #cbd5e1; }
+
+  /* Collapsible detail */
+  .detail-toggle { background: none; border: 1px solid #334155; color: #60a5fa; padding: 6px 14px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; margin-bottom: 14px; transition: all 0.2s; }
+  .detail-toggle:hover { background: #334155; }
+  .detail-box { display: none; background: #0f172a; border-radius: 8px; padding: 18px; margin-bottom: 16px; font-size: 0.85rem; line-height: 1.7; color: #cbd5e1; }
+  .detail-box.open { display: block; }
+  .detail-box ul { margin: 8px 0 8px 20px; }
+  .detail-box li { margin-bottom: 4px; }
+  .detail-box code { background: #334155; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem; color: #60a5fa; }
+
+  /* Pipeline */
+  .pipeline { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stage { background: #0f172a; border-radius: 8px; padding: 16px; text-align: center; position: relative; }
+  .stage::after { content: ''; position: absolute; right: -9px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 6px solid #3b82f6; border-top: 6px solid transparent; border-bottom: 6px solid transparent; z-index: 1; }
+  .stage:last-child::after { display: none; }
+  .stage .num { background: #3b82f6; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
+  .stage .name { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+  .stage .time { font-size: 0.75rem; color: #94a3b8; }
+  .stage .check { color: #22c55e; font-weight: 700; }
+
+  /* Models */
+  .models-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .model-card { background: #0f172a; border-radius: 8px; padding: 20px; position: relative; }
+  .model-card.winner { border: 2px solid #22c55e; }
+  .model-card.winner::before { content: 'MEJOR'; position: absolute; top: -10px; right: 12px; background: #22c55e; color: #000; font-size: 0.65rem; padding: 2px 8px; border-radius: 4px; font-weight: 700; }
+  .model-card h3 { font-size: 0.95rem; margin-bottom: 8px; }
+  .model-card .model-desc { font-size: 0.8rem; color: #94a3b8; margin-bottom: 12px; line-height: 1.5; }
+  .acc-bar-bg { background: #334155; border-radius: 6px; height: 32px; position: relative; overflow: hidden; margin-bottom: 8px; }
+  .acc-bar { height: 100%; border-radius: 6px; display: flex; align-items: center; justify-content: flex-end; padding-right: 10px; font-weight: 700; font-size: 0.9rem; }
+  .acc-bar.blue { background: linear-gradient(90deg, #1d4ed8, #3b82f6); }
+  .acc-bar.purple { background: linear-gradient(90deg, #7c3aed, #a78bfa); }
+  .metrics-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; }
+  .metric-mini { background: #1e293b; border-radius: 6px; padding: 8px; text-align: center; }
+  .metric-mini .mv { font-size: 1rem; font-weight: 700; }
+  .metric-mini .ml { font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; }
+
+  /* Fairness */
+  .fairness { display: flex; gap: 24px; align-items: center; }
+  .fairness-bars { flex: 1; }
+  .fairness-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .fairness-bar-row .lbl { width: 70px; font-size: 0.85rem; text-align: right; }
+  .fairness-bar-bg { flex: 1; background: #334155; border-radius: 6px; height: 24px; overflow: hidden; }
+  .fairness-bar { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 10px; font-size: 0.8rem; font-weight: 600; }
+  .fairness-bar.m { background: #3b82f6; }
+  .fairness-bar.f { background: #ec4899; }
+  .fairness-verdict { background: #0f172a; border-radius: 8px; padding: 16px; text-align: center; min-width: 180px; }
+  .fairness-verdict .diff { font-size: 1.8rem; font-weight: 700; color: #22c55e; }
+  .fairness-verdict .msg { font-size: 0.8rem; color: #94a3b8; margin-top: 4px; }
+
+  /* Charts */
+  .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+  .chart-card { background: #0f172a; border-radius: 8px; overflow: hidden; }
+  .chart-card img { width: 100%; height: auto; display: block; }
+  .chart-card .caption { padding: 6px 14px; font-size: 0.8rem; color: #60a5fa; font-weight: 600; }
+  .chart-card .chart-desc { padding: 0 14px 14px; font-size: 0.8rem; color: #94a3b8; line-height: 1.5; }
+
+  /* Dataset table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+  .data-table th { background: #334155; padding: 8px 12px; text-align: left; font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+  .data-table td { padding: 8px 12px; border-bottom: 1px solid #0f172a; }
+  .data-table tr:hover td { background: #0f172a; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+  .tag.num { background: #1e3a5f; color: #60a5fa; }
+  .tag.cat { background: #3b1f4a; color: #c084fc; }
+  .tag.bin { background: #1a3a2a; color: #4ade80; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tab { padding: 8px 16px; border-radius: 6px; font-size: 0.8rem; cursor: pointer; background: transparent; border: 1px solid #334155; color: #94a3b8; transition: all 0.2s; }
+  .tab:hover { border-color: #3b82f6; color: #e2e8f0; }
+  .tab.active { background: #3b82f6; border-color: #3b82f6; color: #fff; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* Outlier callout */
+  .callout { background: rgba(245,158,11,0.1); border-left: 3px solid #f59e0b; border-radius: 0 8px 8px 0; padding: 14px 18px; margin: 14px 0; font-size: 0.85rem; line-height: 1.6; }
+  .callout .callout-title { font-weight: 700; color: #f59e0b; margin-bottom: 4px; font-size: 0.8rem; text-transform: uppercase; }
+  .callout.info { background: rgba(59,130,246,0.1); border-left-color: #3b82f6; }
+  .callout.info .callout-title { color: #60a5fa; }
+  .callout.success { background: rgba(34,197,94,0.1); border-left-color: #22c55e; }
+  .callout.success .callout-title { color: #22c55e; }
+
+  /* Code block */
+  .code-block { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 16px; font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace; font-size: 0.8rem; line-height: 1.6; overflow-x: auto; margin: 12px 0; color: #e2e8f0; }
+  .code-block .comment { color: #64748b; }
+  .code-block .cmd { color: #22c55e; }
+
+  /* Nav */
+  .nav { position: sticky; top: 0; background: #0f172a; border-bottom: 1px solid #334155; padding: 10px 32px; z-index: 100; display: flex; gap: 6px; flex-wrap: wrap; }
+  .nav a { color: #94a3b8; text-decoration: none; font-size: 0.78rem; padding: 5px 12px; border-radius: 4px; transition: all 0.2s; }
+  .nav a:hover { background: #1e293b; color: #e2e8f0; }
+
+  @media (max-width: 768px) {
+    .pipeline { grid-template-columns: 1fr 1fr; }
+    .stage::after { display: none; }
+    .models-grid { grid-template-columns: 1fr; }
+    .fairness { flex-direction: column; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .intro .context-grid { grid-template-columns: 1fr; }
+    .metrics-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1>Prediccion de Incumplimiento de Prestamos <span class="badge">PIPELINE OK</span></h1>
+  <div class="subtitle">Gestion de Datos para IA (ITY1101) &mdash; Pipeline DataOps completo con analisis de ML y equidad</div>
+</div>
+
+<!-- Nav -->
+<div class="nav">
+  <a href="#contexto">Contexto</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#ingesta">Ingesta</a>
+  <a href="#limpieza">Limpieza</a>
+  <a href="#validacion">Validacion</a>
+  <a href="#carga">Carga</a>
+  <a href="#eda">EDA</a>
+  <a href="#modelos">Modelos</a>
+  <a href="#equidad">Equidad</a>
+  <a href="#dataset">Dataset</a>
+  <a href="#replicar">Como replicar</a>
+</div>
+
+<div class="container">
+
+  <!-- ============ CONTEXTO ============ -->
+  <div class="intro" id="contexto">
+    <h2>Que es este proyecto?</h2>
+    <p>
+      Una entidad financiera quiere <strong>predecir si un solicitante de credito va a incumplir el pago</strong> (no pagar el prestamo). Para eso, se tomo un dataset real de <strong>45,000 solicitudes de prestamos</strong> con informacion como edad, ingresos, historial crediticio, monto del prestamo, etc.
+    </p>
+    <p>
+      El proyecto implementa un <strong>pipeline DataOps</strong>: un flujo automatizado que toma los datos crudos, los limpia, los valida, los almacena, los analiza visualmente y entrena modelos de inteligencia artificial para hacer la prediccion. Todo el proceso esta registrado con logs y metricas de monitoreo.
+    </p>
+    <div class="context-grid">
+      <div class="context-item">
+        <div class="ci-label">Materia</div>
+        <div class="ci-value">Gestion de Datos para IA (ITY1101)</div>
+      </div>
+      <div class="context-item">
+        <div class="ci-label">Tecnologias</div>
+        <div class="ci-value">Python, pandas, scikit-learn, SQLite</div>
+      </div>
+      <div class="context-item">
+        <div class="ci-label">Objetivo</div>
+        <div class="ci-value">Predecir incumplimiento de prestamos</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ KPIs ============ -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="value">45,000</div>
+      <div class="label">Filas originales</div>
+    </div>
+    <div class="kpi">
+      <div class="value green">44,993</div>
+      <div class="label">Filas procesadas</div>
+    </div>
+    <div class="kpi">
+      <div class="value amber">7</div>
+      <div class="label">Filas descartadas</div>
+    </div>
+    <div class="kpi">
+      <div class="value green">100%</div>
+      <div class="label">Completitud</div>
+    </div>
+    <div class="kpi">
+      <div class="value green">0</div>
+      <div class="label">Errores validacion</div>
+    </div>
+    <div class="kpi">
+      <div class="value">0.35s</div>
+      <div class="label">Tiempo total</div>
+    </div>
+  </div>
+
+  <!-- ============ PIPELINE RESUMEN ============ -->
+  <div class="section" id="pipeline">
+    <h2><span class="dot"></span>Pipeline DataOps &mdash; Vision general</h2>
+    <p class="desc">
+      Un <strong>pipeline</strong> es una secuencia de pasos automatizados que transforman datos crudos en informacion util. Cada etapa depende de la anterior: si la ingesta falla, no se puede limpiar; si la limpieza falla, no se puede validar. Esto garantiza que los datos que llegan al modelo de IA sean de calidad.
+    </p>
+    <div class="pipeline">
+      <div class="stage">
+        <div class="num">1</div>
+        <div class="name">Ingesta</div>
+        <div class="time">Leer datos crudos</div>
+        <div class="time">0.05s</div>
+        <div class="check">OK</div>
+      </div>
+      <div class="stage">
+        <div class="num">2</div>
+        <div class="name">Limpieza</div>
+        <div class="time">Corregir problemas</div>
+        <div class="time">0.06s</div>
+        <div class="check">OK</div>
+      </div>
+      <div class="stage">
+        <div class="num">3</div>
+        <div class="name">Validacion</div>
+        <div class="time">Verificar calidad</div>
+        <div class="time">0.00s</div>
+        <div class="check">OK</div>
+      </div>
+      <div class="stage">
+        <div class="num">4</div>
+        <div class="name">Carga</div>
+        <div class="time">Almacenar resultado</div>
+        <div class="time">0.24s</div>
+        <div class="check">OK</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ETAPA 1: INGESTA ============ -->
+  <div class="section" id="ingesta">
+    <h2><span class="dot"></span>Etapa 1 &mdash; Ingesta de Datos</h2>
+    <p class="desc">
+      <strong>Que es la ingesta?</strong> Es el primer paso: leer los datos desde su fuente original y cargarlos en memoria para poder trabajar con ellos. En este caso, el archivo fuente es un <strong>CSV</strong> (Comma-Separated Values), un formato de texto plano donde cada fila es un registro y las columnas estan separadas por comas.
+    </p>
+    <button class="detail-toggle" onclick="toggleDetail('ingesta-detail')">Como se hizo exactamente?</button>
+    <div id="ingesta-detail" class="detail-box">
+      <p>Se utilizo la libreria <code>pandas</code> de Python con la funcion <code>pd.read_csv('datos/loan_data.csv')</code>. Esta funcion:</p>
+      <ul>
+        <li>Lee el archivo CSV linea por linea</li>
+        <li>Detecta automaticamente los tipos de datos (numeros, texto, etc.)</li>
+        <li>Lo convierte en un <strong>DataFrame</strong> (una tabla en memoria, como una hoja de Excel)</li>
+      </ul>
+      <p>Resultado: se cargaron <strong>45,000 filas</strong> con <strong>14 columnas</strong> en <strong>0.05 segundos</strong>.</p>
+      <div class="code-block">
+<span class="comment"># Codigo que hace la ingesta:</span>
+df = pd.read_csv('datos/loan_data.csv')
+<span class="comment"># df ahora tiene 45,000 filas x 14 columnas</span>
+      </div>
+    </div>
+    <div class="callout info">
+      <div class="callout-title">Dato clave</div>
+      El archivo original pesa aprox. 4 MB y contiene solicitudes de prestamos con datos como edad, ingreso, puntaje crediticio, monto solicitado y si la persona pago o no (loan_status).
+    </div>
+  </div>
+
+  <!-- ============ ETAPA 2: LIMPIEZA ============ -->
+  <div class="section" id="limpieza">
+    <h2><span class="dot"></span>Etapa 2 &mdash; Limpieza y Transformacion</h2>
+    <p class="desc">
+      <strong>Que es la limpieza?</strong> Los datos del mundo real vienen con problemas: valores faltantes, datos imposibles, texto que las maquinas no entienden. La limpieza es el proceso de <strong>detectar y corregir estos problemas</strong> para que los datos sean confiables antes de analizarlos.
+    </p>
+    <button class="detail-toggle" onclick="toggleDetail('limpieza-detail')">Que se hizo paso a paso?</button>
+    <div id="limpieza-detail" class="detail-box">
+      <p><strong>Paso 1 &mdash; Buscar valores nulos (vacios):</strong></p>
+      <p>Se reviso cada columna buscando celdas vacias. Resultado: <strong>0 valores nulos</strong>. El dataset estaba completo en este aspecto.</p>
+
+      <p style="margin-top:12px"><strong>Paso 2 &mdash; Eliminar outliers (valores atipicos):</strong></p>
+      <p>Se aplicaron reglas de negocio para detectar datos que no tienen sentido logico:</p>
+      <ul>
+        <li><code>person_age &lt; 18</code> &rarr; Un menor de 18 no puede solicitar un credito</li>
+        <li><code>person_age &gt; 100</code> &rarr; Edades irreales, posible error de carga</li>
+        <li><code>person_income &lt; 0</code> &rarr; Un ingreso negativo no tiene sentido</li>
+        <li><code>person_emp_exp &lt; 0</code> &rarr; Experiencia laboral negativa es imposible</li>
+      </ul>
+      <p>Resultado: <strong>7 filas eliminadas</strong> (todas por edades fuera de rango). El dataset quedo con 44,993 filas.</p>
+
+      <p style="margin-top:12px"><strong>Paso 3 &mdash; Codificacion de variables categoricas:</strong></p>
+      <p>Los modelos de machine learning solo entienden numeros. Las columnas con texto se convirtieron a numeros con <code>LabelEncoder</code>:</p>
+      <ul>
+        <li><code>person_gender</code>: female &rarr; 0, male &rarr; 1</li>
+        <li><code>person_education</code>: Associate &rarr; 0, Bachelor &rarr; 1, Doctorate &rarr; 2, High School &rarr; 3, Master &rarr; 4</li>
+        <li><code>person_home_ownership</code>: MORTGAGE &rarr; 0, OTHER &rarr; 1, OWN &rarr; 2, RENT &rarr; 3</li>
+        <li><code>loan_intent</code>: DEBTCONSOLIDATION &rarr; 0, EDUCATION &rarr; 1, HOMEIMPROVEMENT &rarr; 2, MEDICAL &rarr; 3, PERSONAL &rarr; 4, VENTURE &rarr; 5</li>
+        <li><code>previous_loan_defaults_on_file</code>: No &rarr; 0, Yes &rarr; 1</li>
+      </ul>
+    </div>
+
+    <div class="callout">
+      <div class="callout-title">Por que se descartaron exactamente 7 filas?</div>
+      De las 45,000 filas originales, 7 tenian edades menores a 18 o mayores a 100 anos. Estos son <strong>outliers</strong> (valores atipicos): datos que caen fuera del rango logico esperado. Incluirlos enganaria al modelo porque no representan solicitantes reales de credito. No se encontraron valores nulos ni ingresos/experiencias negativas.
+    </div>
+
+    <div class="callout info">
+      <div class="callout-title">Sobre la tasa de interes</div>
+      El metadata del dataset indicaba que <code>loan_int_rate</code> estaba en puntos basicos (ej: 1602 = 16.02%), pero al revisar los datos reales los valores ya venian en porcentaje (rango: 5.42% - 20.0%, promedio: 11.01%). Por lo tanto, <strong>no se necesito conversion</strong>.
+    </div>
+  </div>
+
+  <!-- ============ ETAPA 3: VALIDACION ============ -->
+  <div class="section" id="validacion">
+    <h2><span class="dot"></span>Etapa 3 &mdash; Validacion Estructural y Semantica</h2>
+    <p class="desc">
+      <strong>Que es la validacion?</strong> Despues de limpiar los datos, hay que <strong>verificar que todo quedo bien</strong> antes de usarlos. Es como un control de calidad en una fabrica: se revisa que el producto final cumple con las especificaciones. Se realizan dos tipos de validacion:
+    </p>
+
+    <button class="detail-toggle" onclick="toggleDetail('validacion-detail')">Ver todas las validaciones</button>
+    <div id="validacion-detail" class="detail-box">
+      <p><strong>Validacion Estructural</strong> (la "forma" de los datos):</p>
+      <ul>
+        <li>Estan las 14 columnas esperadas? &rarr; <span style="color:#22c55e">SI, todas presentes</span></li>
+        <li>Quedan valores nulos? &rarr; <span style="color:#22c55e">NO, 0 nulos</span></li>
+        <li>Cantidad de filas: <span style="color:#22c55e">44,993</span></li>
+        <li>Cantidad de columnas: <span style="color:#22c55e">14</span></li>
+      </ul>
+      <p style="margin-top:12px"><strong>Validacion Semantica</strong> (el "significado" de los datos):</p>
+      <ul>
+        <li>Edades entre 18 y 100? &rarr; <span style="color:#22c55e">SI (min: 20, max: 94)</span></li>
+        <li>Ingresos no negativos? &rarr; <span style="color:#22c55e">SI (min: $8,000)</span></li>
+        <li>Credit score entre 300-850? &rarr; <span style="color:#22c55e">SI (min: 390, max: 784)</span></li>
+        <li>Tasa de interes entre 0-100%? &rarr; <span style="color:#22c55e">SI (min: 5.42%, max: 20.0%)</span></li>
+        <li>loan_status solo tiene 0 y 1? &rarr; <span style="color:#22c55e">SI, es binario</span></li>
+        <li>Completitud del dataset: <span style="color:#22c55e">100%</span></li>
+      </ul>
+      <p style="margin-top:12px"><strong>Resultado: 0 errores de validacion.</strong> Los datos estan listos para ser usados.</p>
+    </div>
+
+    <div class="callout success">
+      <div class="callout-title">Resultado</div>
+      Todas las validaciones pasaron correctamente. La <strong>validacion estructural</strong> confirma que los datos tienen la forma esperada (columnas correctas, sin nulos). La <strong>validacion semantica</strong> confirma que los valores tienen sentido logico (edades reales, ingresos positivos, scores en rango valido).
+    </div>
+  </div>
+
+  <!-- ============ ETAPA 4: CARGA ============ -->
+  <div class="section" id="carga">
+    <h2><span class="dot"></span>Etapa 4 &mdash; Carga de Datos</h2>
+    <p class="desc">
+      <strong>Que es la carga?</strong> Una vez que los datos estan limpios y validados, se <strong>almacenan en formatos permanentes</strong> para que puedan ser consultados despues sin tener que repetir todo el proceso. Los datos se guardaron en dos formatos:
+    </p>
+
+    <button class="detail-toggle" onclick="toggleDetail('carga-detail')">Ver detalles de la carga</button>
+    <div id="carga-detail" class="detail-box">
+      <p><strong>1. Archivo CSV limpio</strong> (<code>../03_EDA_Resultados/datos_limpios.csv</code>):</p>
+      <p>Una copia del dataset ya procesado en formato texto. Util para compartir o importar en otras herramientas como Excel o Google Sheets.</p>
+
+      <p style="margin-top:12px"><strong>2. Base de datos SQLite</strong> (<code>../03_EDA_Resultados/prestamos.db</code>):</p>
+      <p>Una base de datos relacional ligera. Se creo la tabla <code>prestamos</code> con las 44,993 filas. Permite hacer consultas SQL sobre los datos, por ejemplo:</p>
+      <div class="code-block">
+<span class="comment">-- Cuantos prestamos de cada tipo hay?</span>
+SELECT loan_intent, COUNT(*) FROM prestamos GROUP BY loan_intent;
+
+<span class="comment">-- Promedio de ingreso de quienes incumplen?</span>
+SELECT AVG(person_income) FROM prestamos WHERE loan_status = 1;
+      </div>
+      <p>Se verifico que las 44,993 filas se cargaron correctamente en la base de datos.</p>
+    </div>
+  </div>
+
+  <!-- ============ EDA ============ -->
+  <div class="section" id="eda">
+    <h2><span class="dot"></span>Analisis Exploratorio de Datos (EDA)</h2>
+    <p class="desc">
+      <strong>Que es el EDA?</strong> Antes de entrenar un modelo de IA, hay que <strong>entender los datos visualmente</strong>. El EDA (Exploratory Data Analysis) genera graficos y estadisticas que permiten descubrir patrones, detectar anomalias y entender la distribucion de las variables. Es como "conocer" los datos antes de pedirle a la maquina que aprenda de ellos.
+    </p>
+
+    <div class="callout info" style="margin-bottom: 18px;">
+      <div class="callout-title">Estadisticas clave del dataset</div>
+      <strong>Edad promedio:</strong> 27.7 anos | <strong>Ingreso minimo:</strong> $8,000 | <strong>Tasa de interes promedio:</strong> 11.01% | <strong>Incumplimiento:</strong> 10,000 de 44,993 (22.2%) pagaron vs no pagaron.
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <img src="../03_EDA_Resultados/distribucion_target.png" alt="Distribucion Target" loading="lazy">
+        <div class="caption">Distribucion de Incumplimiento</div>
+        <div class="chart-desc">Muestra cuantos prestamos fueron pagados (0) vs cuantos incumplieron (1). Se ve un <strong>desbalance</strong>: 34,993 pagados vs 10,000 incumplidos. Esto significa que la mayoria de las personas si pagan sus prestamos.</div>
+      </div>
+      <div class="chart-card">
+        <img src="../03_EDA_Resultados/distribucion_edad.png" alt="Distribucion Edad" loading="lazy">
+        <div class="caption">Distribucion de Edad</div>
+        <div class="chart-desc">La mayoria de los solicitantes tienen entre <strong>20 y 30 anos</strong>. Es una distribucion sesgada a la derecha: hay muchos jovenes y pocos adultos mayores pidiendo prestamos.</div>
+      </div>
+      <div class="chart-card">
+        <img src="../03_EDA_Resultados/tasa_interes_por_status.png" alt="Tasa de Interes por Status" loading="lazy">
+        <div class="caption">Tasa de Interes por Estado</div>
+        <div class="chart-desc">Los prestamos que <strong>incumplieron (1) tienden a tener tasas de interes mas altas</strong>. Esto tiene sentido: tasas altas implican mayor riesgo percibido por el banco, y efectivamente esos prestamos fallan mas.</div>
+      </div>
+      <div class="chart-card">
+        <img src="../03_EDA_Resultados/equidad_genero.png" alt="Equidad Genero" loading="lazy">
+        <div class="caption">Accuracy por Genero</div>
+        <div class="chart-desc">Compara que tan bien predice el modelo para hombres vs mujeres. Si las barras son similares, el modelo <strong>no discrimina por genero</strong>.</div>
+      </div>
+    </div>
+    <div style="margin-top: 16px;">
+      <div class="chart-card">
+        <img src="../03_EDA_Resultados/arbol_decision.png" alt="Arbol de Decision" loading="lazy">
+        <div class="caption">Arbol de Decision &mdash; Como decide el modelo</div>
+        <div class="chart-desc">Muestra visualmente <strong>como el modelo toma cada decision</strong>. Parte desde arriba con todos los datos y va haciendo preguntas (ej: "tasa de interes <= 13.5?"). Segun la respuesta, va por la rama izquierda (si) o derecha (no), hasta llegar a una hoja que dice si predice <strong>Pagado</strong> o <strong>Incumplido</strong>. Esto hace que el modelo sea <strong>interpretable</strong>: se puede explicar exactamente por que se rechazo o aprobo un prestamo.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MODELOS ============ -->
+  <div class="section" id="modelos">
+    <h2><span class="dot"></span>Modelos de Clasificacion</h2>
+    <p class="desc">
+      <strong>Que es un modelo de clasificacion?</strong> Es un algoritmo de inteligencia artificial que aprende de datos historicos para <strong>predecir a que categoria pertenece un nuevo dato</strong>. En este caso, predice si un prestamo sera pagado (0) o incumplido (1). Se entrenaron 2 modelos diferentes y se compararon para elegir el mejor.
+    </p>
+
+    <div class="callout info" style="margin-bottom: 18px;">
+      <div class="callout-title">Como se dividieron los datos?</div>
+      Se separo el dataset en dos partes: <strong>70% para entrenamiento</strong> (31,495 filas) y <strong>30% para prueba</strong> (13,498 filas). El modelo aprende con el 70% y se evalua con el 30% que nunca vio, para medir que tan bien generaliza a datos nuevos.
+    </div>
+
+    <div class="models-grid">
+      <div class="model-card winner">
+        <h3>Arbol de Decision</h3>
+        <div class="model-desc">Funciona como un diagrama de flujo: hace preguntas sobre los datos (ej: "ingreso > $50,000?") y segun la respuesta va por una rama u otra hasta llegar a una prediccion. Se limito a 5 niveles de profundidad para evitar que memorice los datos.</div>
+        <div class="acc-bar-bg">
+          <div class="acc-bar blue" style="width: 91.28%">91.28%</div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-mini"><div class="mv" style="color:#3b82f6">0.92</div><div class="ml">Precision (0)</div></div>
+          <div class="metric-mini"><div class="mv" style="color:#3b82f6">0.88</div><div class="ml">Precision (1)</div></div>
+          <div class="metric-mini"><div class="mv" style="color:#3b82f6">0.71</div><div class="ml">Recall (1)</div></div>
+        </div>
+      </div>
+      <div class="model-card">
+        <h3>Regresion Logistica</h3>
+        <div class="model-desc">Calcula una probabilidad entre 0% y 100% de que el prestamo sea incumplido, usando una formula matematica. Si la probabilidad es mayor a 50%, predice incumplimiento. Es un modelo mas simple y lineal.</div>
+        <div class="acc-bar-bg">
+          <div class="acc-bar purple" style="width: 88.54%">88.54%</div>
+        </div>
+        <div class="metrics-row">
+          <div class="metric-mini"><div class="mv" style="color:#a78bfa">0.92</div><div class="ml">Precision (0)</div></div>
+          <div class="metric-mini"><div class="mv" style="color:#a78bfa">0.75</div><div class="ml">Precision (1)</div></div>
+          <div class="metric-mini"><div class="mv" style="color:#a78bfa">0.73</div><div class="ml">Recall (1)</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info" style="margin-top: 16px;">
+      <div class="callout-title">Que significan estas metricas?</div>
+      <strong>Accuracy:</strong> Porcentaje de predicciones correctas sobre el total.
+      <strong>Precision:</strong> De todos los que el modelo dijo que incumplirian, cuantos realmente incumplieron.
+      <strong>Recall:</strong> De todos los que realmente incumplieron, cuantos detecto el modelo. Un recall de 0.71 significa que el modelo detecta el 71% de los incumplimientos reales.
+    </div>
+  </div>
+
+  <!-- ============ EQUIDAD ============ -->
+  <div class="section" id="equidad">
+    <h2><span class="dot"></span>Analisis de Equidad</h2>
+    <p class="desc">
+      <strong>Por que analizar equidad?</strong> Es fundamental que un modelo de IA <strong>no discrimine</strong> por genero, raza u otras caracteristicas sensibles. Se comparo la precision del modelo entre hombres y mujeres para verificar que funciona igual para todos. Si la diferencia es menor al 5%, se considera equitativo.
+    </p>
+
+    <div class="fairness">
+      <div class="fairness-bars">
+        <div class="fairness-bar-row">
+          <div class="lbl">Male</div>
+          <div class="fairness-bar-bg">
+            <div class="fairness-bar m" style="width: 91.54%">91.54% (7,506 muestras)</div>
+          </div>
+        </div>
+        <div class="fairness-bar-row">
+          <div class="lbl">Female</div>
+          <div class="fairness-bar-bg">
+            <div class="fairness-bar f" style="width: 90.95%">90.95% (5,992 muestras)</div>
+          </div>
+        </div>
+      </div>
+      <div class="fairness-verdict">
+        <div class="diff">0.59%</div>
+        <div class="msg">Diferencia &lt; 5%</div>
+        <div style="margin-top:8px; font-size:0.85rem; color:#22c55e; font-weight:600;">Modelo equitativo</div>
+      </div>
+    </div>
+
+    <div class="callout success" style="margin-top: 16px;">
+      <div class="callout-title">Conclusion</div>
+      La diferencia de accuracy entre generos es de solo <strong>0.59 puntos porcentuales</strong>, muy por debajo del umbral del 5%. El modelo predice con precision similar para hombres (91.54%) y mujeres (90.95%), lo que indica que <strong>no existe sesgo de genero significativo</strong> en las predicciones.
+    </div>
+  </div>
+
+  <!-- ============ DATASET ============ -->
+  <div class="section" id="dataset">
+    <h2><span class="dot"></span>Diccionario de Datos</h2>
+    <p class="desc">
+      Estas son las <strong>14 variables</strong> del dataset. Cada fila representa una solicitud de prestamo. La variable objetivo (<code>loan_status</code>) es lo que el modelo intenta predecir.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Variable</th><th>Descripcion</th><th>Tipo</th><th>Ejemplo / Rango</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>person_age</code></td><td>Edad del solicitante en anos</td><td><span class="tag num">Numerico</span></td><td>20 - 94</td></tr>
+        <tr><td><code>person_gender</code></td><td>Genero del solicitante</td><td><span class="tag cat">Categorico</span></td><td>male, female</td></tr>
+        <tr><td><code>person_education</code></td><td>Nivel educativo alcanzado</td><td><span class="tag cat">Categorico</span></td><td>High School, Bachelor, Master, Associate, Doctorate</td></tr>
+        <tr><td><code>person_income</code></td><td>Ingreso anual en dolares</td><td><span class="tag num">Numerico</span></td><td>$8,000 en adelante</td></tr>
+        <tr><td><code>person_emp_exp</code></td><td>Anos de experiencia laboral</td><td><span class="tag num">Numerico</span></td><td>0+</td></tr>
+        <tr><td><code>person_home_ownership</code></td><td>Situacion de vivienda</td><td><span class="tag cat">Categorico</span></td><td>RENT, OWN, MORTGAGE, OTHER</td></tr>
+        <tr><td><code>loan_amnt</code></td><td>Monto del prestamo solicitado</td><td><span class="tag num">Numerico</span></td><td>Dolares</td></tr>
+        <tr><td><code>loan_intent</code></td><td>Proposito del prestamo</td><td><span class="tag cat">Categorico</span></td><td>PERSONAL, EDUCATION, MEDICAL, VENTURE, HOMEIMPROVEMENT, DEBTCONSOLIDATION</td></tr>
+        <tr><td><code>loan_int_rate</code></td><td>Tasa de interes del prestamo</td><td><span class="tag num">Numerico</span></td><td>5.42% - 20.0%</td></tr>
+        <tr><td><code>loan_percent_income</code></td><td>Ratio prestamo / ingreso anual</td><td><span class="tag num">Numerico</span></td><td>0.0 - 1.0</td></tr>
+        <tr><td><code>cb_person_cred_hist_length</code></td><td>Anos de historial crediticio</td><td><span class="tag num">Numerico</span></td><td>2+</td></tr>
+        <tr><td><code>credit_score</code></td><td>Puntaje crediticio (tipo FICO)</td><td><span class="tag num">Numerico</span></td><td>390 - 784</td></tr>
+        <tr><td><code>previous_loan_defaults_on_file</code></td><td>Tiene incumplimientos previos registrados?</td><td><span class="tag cat">Categorico</span></td><td>Yes, No</td></tr>
+        <tr><td><code>loan_status</code></td><td><strong>Variable objetivo:</strong> 1 = incumplio, 0 = pago</td><td><span class="tag bin">Binario</span></td><td>0, 1</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============ COMO REPLICAR ============ -->
+  <div class="section" id="replicar">
+    <h2><span class="dot"></span>Como replicar este proyecto</h2>
+    <p class="desc">
+      Sigue estos pasos para ejecutar el pipeline completo en tu computadora y obtener los mismos resultados.
+    </p>
+
+    <div class="detail-box open">
+      <p><strong>Requisitos previos:</strong></p>
+      <ul>
+        <li>Python 3.10 o superior instalado</li>
+        <li>pip (gestor de paquetes de Python)</li>
+        <li>Git (para clonar el repositorio)</li>
+      </ul>
+
+      <p style="margin-top:16px"><strong>Paso 1 &mdash; Clonar el repositorio:</strong></p>
+      <div class="code-block">
+<span class="cmd">git clone</span> &lt;url-del-repositorio&gt;
+<span class="cmd">cd</span> GestionDeDatos
+      </div>
+
+      <p><strong>Paso 2 &mdash; Crear un entorno virtual (recomendado):</strong></p>
+      <div class="code-block">
+<span class="comment"># Crea un entorno aislado para no afectar otras instalaciones de Python</span>
+<span class="cmd">python -m venv</span> venv
+
+<span class="comment"># Activar en Windows:</span>
+<span class="cmd">venv\Scripts\activate</span>
+
+<span class="comment"># Activar en Linux/Mac:</span>
+<span class="cmd">source</span> venv/bin/activate
+      </div>
+
+      <p><strong>Paso 3 &mdash; Instalar dependencias:</strong></p>
+      <div class="code-block">
+<span class="cmd">pip install</span> -r 02_Ingesta_y_Pipeline/requirements.txt
+<span class="comment"># Instala: pandas, scikit-learn, matplotlib, seaborn, pytest</span>
+      </div>
+
+      <p><strong>Paso 4 &mdash; Ejecutar el pipeline completo:</strong></p>
+      <div class="code-block">
+<span class="cmd">python</span> 02_Ingesta_y_Pipeline/analisis.py
+<span class="comment"># Ejecuta las 4 etapas + EDA + modelos + equidad</span>
+<span class="comment"># Los resultados se guardan en la carpeta 03_EDA_Resultados/</span>
+      </div>
+
+      <p><strong>Paso 5 &mdash; Ejecutar los tests automatizados:</strong></p>
+      <div class="code-block">
+<span class="cmd">pytest</span> 02_Ingesta_y_Pipeline/test_analisis.py -v
+<span class="comment"># Ejecuta 5 tests que verifican:</span>
+<span class="comment"># - Que el archivo de datos existe</span>
+<span class="comment"># - Que los datos se cargan correctamente</span>
+<span class="comment"># - Que las 14 columnas esperadas estan presentes</span>
+<span class="comment"># - Que los rangos de datos son validos</span>
+<span class="comment"># - Que la variable objetivo es binaria (0/1)</span>
+      </div>
+
+      <p><strong>Paso 6 &mdash; Ver resultados:</strong></p>
+      <p>Abre <code>04_Pagina_Web/dashboard.html</code> en un navegador para ver este dashboard, o revisa la carpeta <code>03_EDA_Resultados/</code>:</p>
+      <table class="data-table" style="margin-top:8px">
+        <thead><tr><th>Archivo</th><th>Que contiene</th></tr></thead>
+        <tbody>
+          <tr><td><code>log_ejecucion.log</code></td><td>Log completo paso a paso del pipeline</td></tr>
+          <tr><td><code>datos_limpios.csv</code></td><td>Dataset procesado y listo para usar</td></tr>
+          <tr><td><code>prestamos.db</code></td><td>Base de datos SQLite con los datos</td></tr>
+          <tr><td><code>reporte.txt</code></td><td>Resumen con KPIs y metricas de los modelos</td></tr>
+          <tr><td><code>*.png</code></td><td>5 graficas del analisis exploratorio y equidad</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function toggleDetail(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  const btn = el.previousElementSibling;
+  if (el.classList.contains('open')) {
+    btn.textContent = btn.textContent.replace('Ver', 'Ocultar').replace('Como se hizo', 'Ocultar como se hizo').replace('Que se hizo', 'Ocultar que se hizo');
+  } else {
+    btn.textContent = btn.textContent.replace('Ocultar', 'Ver').replace('Ocultar como se hizo', 'Como se hizo').replace('Ocultar que se hizo', 'Que se hizo');
+  }
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

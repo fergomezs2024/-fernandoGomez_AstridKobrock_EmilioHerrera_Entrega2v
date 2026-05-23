@@ -1,0 +1,1534 @@
+2026-05-06 18:42:20,556 - INFO - ============================================================
+2026-05-06 18:42:20,556 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-06 18:42:20,556 - INFO - ============================================================
+2026-05-06 18:42:20,603 - INFO - Datos cargados desde: datos/loan_data.csv
+2026-05-06 18:42:20,603 - INFO - Filas: 45000, Columnas: 14
+2026-05-06 18:42:20,604 - INFO - Tiempo de ingesta: 0.05 segundos
+2026-05-06 18:42:20,604 - INFO - Primeras 5 filas:
+2026-05-06 18:42:20,616 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-06 18:42:20,616 - INFO - Tipos de datos:
+2026-05-06 18:42:20,617 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-06 18:42:20,617 - INFO - ============================================================
+2026-05-06 18:42:20,617 - INFO - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+2026-05-06 18:42:20,617 - INFO - ============================================================
+2026-05-06 18:42:20,617 - INFO - Valores nulos por columna:
+2026-05-06 18:42:20,624 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-06 18:42:20,637 - INFO - Filas eliminadas por nulos: 0
+2026-05-06 18:42:20,650 - INFO - Filas eliminadas por outliers: 7
+2026-05-06 18:42:20,650 - INFO - Filas restantes despues de limpieza: 44993
+2026-05-06 18:42:20,650 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-06 18:42:20,650 - INFO - Los valores de loan_int_rate ya estan en porcentaje, no se necesita conversion.
+2026-05-06 18:42:20,653 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-06 18:42:20,659 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-06 18:42:20,664 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-06 18:42:20,669 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-06 18:42:20,674 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-06 18:42:20,678 - INFO - Tiempo de limpieza: 0.06 segundos
+2026-05-06 18:42:20,678 - INFO - ============================================================
+2026-05-06 18:42:20,678 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-06 18:42:20,678 - INFO - ============================================================
+2026-05-06 18:42:20,678 - INFO - --- Validacion Estructural ---
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'person_age' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'person_education' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'person_income' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'person_emp_exp' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'person_home_ownership' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-06 18:42:20,678 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-06 18:42:20,679 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-06 18:42:20,679 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-06 18:42:20,679 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-06 18:42:20,679 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-06 18:42:20,680 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-06 18:42:20,680 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-06 18:42:20,680 - INFO - --- Validacion Semantica ---
+2026-05-06 18:42:20,680 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-06 18:42:20,680 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-06 18:42:20,680 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-06 18:42:20,681 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-06 18:42:20,681 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-06 18:42:20,682 - INFO -   [OK] Completitud del dataset: 100.0%
+2026-05-06 18:42:20,682 - INFO - Errores de validacion encontrados: 0
+2026-05-06 18:42:20,682 - INFO - Tiempo de validacion: 0.00 segundos
+2026-05-06 18:42:20,682 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-06 18:42:20,682 - INFO - ============================================================
+2026-05-06 18:42:20,682 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-06 18:42:20,682 - INFO - ============================================================
+2026-05-06 18:42:20,832 - INFO - Datos limpios guardados en: resultados/datos_limpios.csv
+2026-05-06 18:42:20,918 - INFO - Datos cargados en SQLite: resultados/prestamos.db
+2026-05-06 18:42:20,918 - INFO - Tabla 'prestamos' creada con 44993 filas
+2026-05-06 18:42:20,918 - INFO - Tiempo de carga: 0.24 segundos
+2026-05-06 18:42:20,918 - INFO - ============================================================
+2026-05-06 18:42:20,918 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-06 18:42:20,918 - INFO - ============================================================
+2026-05-06 18:42:20,918 - INFO - Estadisticas descriptivas:
+2026-05-06 18:42:20,948 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-06 18:42:20,948 - INFO - Distribucion de loan_status:
+2026-05-06 18:42:20,950 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-06 18:42:21,063 - INFO - Grafica guardada: resultados/distribucion_target.png
+2026-05-06 18:42:21,146 - INFO - Grafica guardada: resultados/distribucion_edad.png
+2026-05-06 18:42:21,492 - INFO - Grafica guardada: resultados/correlacion.png
+2026-05-06 18:42:21,581 - INFO - Grafica guardada: resultados/tasa_interes_por_status.png
+2026-05-06 18:42:21,581 - INFO - ============================================================
+2026-05-06 18:42:21,581 - INFO - MODELO DE CLASIFICACION
+2026-05-06 18:42:21,581 - INFO - ============================================================
+2026-05-06 18:42:21,589 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-06 18:42:21,589 - INFO - Datos de prueba: 13498 filas
+2026-05-06 18:42:21,589 - INFO - ----------------------------------------
+2026-05-06 18:42:21,589 - INFO - MODELO 1: Arbol de Decision
+2026-05-06 18:42:21,633 - INFO - Accuracy: 0.9128
+2026-05-06 18:42:21,635 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-06 18:42:21,640 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-06 18:42:21,640 - INFO - ----------------------------------------
+2026-05-06 18:42:21,640 - INFO - MODELO 2: Regresion Logistica
+2026-05-06 18:42:22,907 - INFO - Accuracy: 0.8854
+2026-05-06 18:42:22,908 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-06 18:42:22,913 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-06 18:42:22,913 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-06 18:42:22,913 - INFO - ============================================================
+2026-05-06 18:42:22,913 - INFO - ANALISIS DE EQUIDAD POR GENERO
+2026-05-06 18:42:22,913 - INFO - ============================================================
+2026-05-06 18:42:22,916 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2026-05-06 18:42:22,917 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-06 18:42:22,969 - INFO - Grafica guardada: resultados/equidad_genero.png
+2026-05-06 18:42:22,969 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-06 18:42:22,969 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-06 18:42:22,969 - INFO - ============================================================
+2026-05-06 18:42:22,969 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-06 18:42:22,969 - INFO - ============================================================
+2026-05-06 18:42:22,969 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-06 18:42:22,969 - INFO - Tiempo total del pipeline: 0.35 segundos
+2026-05-06 18:42:22,969 - INFO -   - Ingesta: 0.05s
+2026-05-06 18:42:22,969 - INFO -   - Limpieza: 0.06s
+2026-05-06 18:42:22,969 - INFO -   - Validacion: 0.00s
+2026-05-06 18:42:22,969 - INFO -   - Carga: 0.24s
+2026-05-06 18:42:22,969 - INFO - Filas procesadas: 44993
+2026-05-06 18:42:22,969 - INFO - Filas descartadas: 7
+2026-05-06 18:42:22,969 - INFO - Completitud: 100.0%
+2026-05-06 18:42:22,969 - INFO - Errores de validacion: 0
+2026-05-06 18:42:22,970 - INFO - Reporte guardado en: resultados/reporte.txt
+2026-05-06 18:42:22,970 - INFO - 
+2026-05-06 18:42:22,970 - INFO - ============================================================
+2026-05-06 18:42:22,970 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-06 18:42:22,970 - INFO - Resultados en la carpeta 'resultados/'
+2026-05-06 18:42:22,970 - INFO - ============================================================
+2026-05-13 12:45:13,830 - INFO - ============================================================
+2026-05-13 12:45:13,831 - INFO - ============================================================
+2026-05-13 12:45:13,831 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-13 12:45:13,831 - INFO - ============================================================
+2026-05-13 12:45:13,831 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-13 12:45:13,831 - INFO - ============================================================
+2026-05-13 12:45:13,832 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-13 12:45:13,832 - INFO - ============================================================
+2026-05-13 12:45:13,832 - INFO - ============================================================
+2026-05-13 12:45:13,832 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-13 12:45:13,832 - INFO - ============================================================
+2026-05-13 12:45:14,035 - INFO - Datos cargados desde: datos/loan_data.csv
+2026-05-13 12:45:14,036 - INFO - Filas: 45000, Columnas: 14
+2026-05-13 12:45:14,036 - INFO - Tiempo de ingesta: 0.20 segundos
+2026-05-13 12:45:14,036 - INFO - Primeras 5 filas:
+2026-05-13 12:45:14,037 - INFO - Datos cargados desde: datos/loan_data.csv
+2026-05-13 12:45:14,037 - INFO - Datos cargados desde: datos/loan_data.csv
+2026-05-13 12:45:14,037 - INFO - Filas: 45000, Columnas: 14
+2026-05-13 12:45:14,038 - INFO - Tiempo de ingesta: 0.21 segundos
+2026-05-13 12:45:14,038 - INFO - Filas: 45000, Columnas: 14
+2026-05-13 12:45:14,038 - INFO - Primeras 5 filas:
+2026-05-13 12:45:14,038 - INFO - Tiempo de ingesta: 0.20 segundos
+2026-05-13 12:45:14,038 - INFO - Filas: 45000, Columnas: 14
+2026-05-13 12:45:14,038 - INFO - Tiempo de ingesta: 0.21 segundos
+2026-05-13 12:45:14,038 - INFO - Primeras 5 filas:
+2026-05-13 12:45:14,038 - INFO - Primeras 5 filas:
+2026-05-13 12:45:14,071 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-13 12:45:14,072 - INFO - Tipos de datos:
+2026-05-13 12:45:14,073 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-13 12:45:14,073 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-13 12:45:14,074 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-13 12:45:14,074 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-13 12:45:14,074 - INFO - ============================================================
+2026-05-13 12:45:14,074 - INFO - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+2026-05-13 12:45:14,074 - INFO - ============================================================
+2026-05-13 12:45:14,075 - INFO - Valores nulos por columna:
+2026-05-13 12:45:14,075 - INFO - Tipos de datos:
+2026-05-13 12:45:14,075 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-13 12:45:14,075 - INFO - ============================================================
+2026-05-13 12:45:14,075 - INFO - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+2026-05-13 12:45:14,075 - INFO - ============================================================
+2026-05-13 12:45:14,075 - INFO - Valores nulos por columna:
+2026-05-13 12:45:14,075 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-13 12:45:14,076 - INFO - ============================================================
+2026-05-13 12:45:14,076 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-13 12:45:14,076 - INFO - ============================================================
+2026-05-13 12:45:14,076 - INFO - ============================================================
+2026-05-13 12:45:14,076 - INFO - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+2026-05-13 12:45:14,076 - INFO - ============================================================
+2026-05-13 12:45:14,076 - INFO - Valores nulos por columna:
+2026-05-13 12:45:14,076 - INFO - Valores nulos por columna:
+2026-05-13 12:45:14,093 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-13 12:45:14,095 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-13 12:45:14,099 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-13 12:45:14,104 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-13 12:45:14,114 - INFO - Filas eliminadas por nulos: 0
+2026-05-13 12:45:14,120 - INFO - Filas eliminadas por nulos: 0
+2026-05-13 12:45:14,122 - INFO - Filas eliminadas por nulos: 0
+2026-05-13 12:45:14,129 - INFO - Filas eliminadas por nulos: 0
+2026-05-13 12:45:14,145 - INFO - Filas eliminadas por outliers: 7
+2026-05-13 12:45:14,145 - INFO - Filas restantes despues de limpieza: 44993
+2026-05-13 12:45:14,146 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-13 12:45:14,146 - INFO - Los valores de loan_int_rate ya estan en porcentaje, no se necesita conversion.
+2026-05-13 12:45:14,149 - INFO - Filas eliminadas por outliers: 7
+2026-05-13 12:45:14,149 - INFO - Filas restantes despues de limpieza: 44993
+2026-05-13 12:45:14,150 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-13 12:45:14,150 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-13 12:45:14,150 - INFO - Los valores de loan_int_rate ya estan en porcentaje, no se necesita conversion.
+2026-05-13 12:45:14,154 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-13 12:45:14,155 - INFO - Filas eliminadas por outliers: 7
+2026-05-13 12:45:14,156 - INFO - Filas restantes despues de limpieza: 44993
+2026-05-13 12:45:14,156 - INFO - Filas eliminadas por outliers: 7
+2026-05-13 12:45:14,156 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-13 12:45:14,156 - INFO - Filas restantes despues de limpieza: 44993
+centaje, no se necesita conversion.
+2026-05-13 12:45:14,158 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-13 12:45:14,158 - INFO - Los valores de loan_int_rate ya estan en porcentaje, no se necesita conversion.
+2026-05-13 12:45:14,159 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-13 12:45:14,161 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-13 12:45:14,163 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-13 12:45:14,165 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-13 12:45:14,169 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-13 12:45:14,174 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-13 12:45:14,178 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-13 12:45:14,179 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-13 12:45:14,181 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-13 12:45:14,184 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-13 12:45:14,190 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-13 12:45:14,193 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-13 12:45:14,194 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-13 12:45:14,199 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-13 12:45:14,206 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-13 12:45:14,206 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-13 12:45:14,209 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-13 12:45:14,210 - INFO - Tiempo de limpieza: 0.13 segundos
+2026-05-13 12:45:14,210 - INFO - ============================================================
+2026-05-13 12:45:14,210 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-13 12:45:14,210 - INFO - ============================================================
+2026-05-13 12:45:14,210 - INFO - --- Validacion Estructural ---
+2026-05-13 12:45:14,210 - INFO -   [OK] Columna 'person_age' presente
+2026-05-13 12:45:14,210 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-13 12:45:14,210 - INFO -   [OK] Columna 'person_education' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'person_income' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'person_emp_exp' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'person_home_ownership' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-13 12:45:14,211 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-13 12:45:14,214 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-13 12:45:14,214 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-13 12:45:14,214 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-13 12:45:14,214 - INFO - --- Validacion Semantica ---
+2026-05-13 12:45:14,215 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-13 12:45:14,215 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-13 12:45:14,215 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-13 12:45:14,216 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-13 12:45:14,217 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-13 12:45:14,220 - INFO - Tiempo de limpieza: 0.14 segundos
+2026-05-13 12:45:14,220 - INFO - ============================================================
+2026-05-13 12:45:14,220 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-13 12:45:14,220 - INFO - ============================================================
+2026-05-13 12:45:14,220 - INFO - --- Validacion Estructural ---
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'person_age' presente
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-13 12:45:14,220 - INFO - Tiempo de limpieza: 0.15 segundos
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'person_education' presente
+2026-05-13 12:45:14,221 - INFO - ============================================================
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'person_income' presente
+2026-05-13 12:45:14,221 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-13 12:45:14,221 - INFO - ============================================================
+2026-05-13 12:45:14,221 - INFO -   [OK] Completitud del dataset: 100.0%
+resente
+2026-05-13 12:45:14,221 - INFO - --- Validacion Estructural ---
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-13 12:45:14,221 - INFO - Errores de validacion encontrados: 0
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-13 12:45:14,221 - INFO - Tiempo de validacion: 0.01 segundos
+2026-05-13 12:45:14,221 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-13 12:45:14,221 - INFO - ============================================================
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-13 12:45:14,221 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-13 12:45:14,221 - INFO - ============================================================
+2026-05-13 12:45:14,221 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'person_education' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'person_income' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'person_emp_exp' presente
+2026-05-13 12:45:14,222 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'person_home_ownership' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-13 12:45:14,222 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-13 12:45:14,223 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-13 12:45:14,223 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-13 12:45:14,223 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-13 12:45:14,223 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-13 12:45:14,223 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-13 12:45:14,224 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-13 12:45:14,226 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-13 12:45:14,226 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-13 12:45:14,226 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-13 12:45:14,226 - INFO - --- Validacion Semantica ---
+2026-05-13 12:45:14,227 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-13 12:45:14,227 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-13 12:45:14,228 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-13 12:45:14,228 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-13 12:45:14,228 - INFO - --- Validacion Semantica ---
+2026-05-13 12:45:14,228 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-13 12:45:14,229 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-13 12:45:14,229 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-13 12:45:14,229 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-13 12:45:14,229 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-13 12:45:14,230 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-13 12:45:14,231 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-13 12:45:14,231 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-13 12:45:14,232 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-13 12:45:14,232 - INFO - Tiempo de limpieza: 0.16 segundos
+2026-05-13 12:45:14,233 - INFO - ============================================================
+2026-05-13 12:45:14,233 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-13 12:45:14,233 - INFO - ============================================================
+2026-05-13 12:45:14,233 - INFO -   [OK] Completitud del dataset: 100.0%
+2026-05-13 12:45:14,233 - INFO -   [OK] Columna 'person_age' presente
+2026-05-13 12:45:14,233 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-13 12:45:14,233 - INFO -   [OK] Columna 'person_education' presente
+2026-05-13 12:45:14,233 - INFO -   [OK] Columna 'person_income' presente
+2026-05-13 12:45:14,234 - INFO - Tiempo de validacion: 0.01 segundos
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'person_emp_exp' presente
+2026-05-13 12:45:14,234 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'person_home_ownership' presente
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-13 12:45:14,234 - INFO - ============================================================
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-13 12:45:14,234 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-13 12:45:14,234 - INFO -   [OK] Completitud del dataset: 100.0%
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-13 12:45:14,234 - INFO - ============================================================
+2026-05-13 12:45:14,234 - INFO - Errores de validacion encontrados: 0
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-13 12:45:14,234 - INFO - Tiempo de validacion: 0.01 segundos
+2026-05-13 12:45:14,234 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-13 12:45:14,235 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-13 12:45:14,235 - INFO - ============================================================
+2026-05-13 12:45:14,235 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-13 12:45:14,235 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-13 12:45:14,235 - INFO - ============================================================
+2026-05-13 12:45:14,237 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-13 12:45:14,237 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-13 12:45:14,237 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-13 12:45:14,238 - INFO - --- Validacion Semantica ---
+2026-05-13 12:45:14,239 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-13 12:45:14,239 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-13 12:45:14,240 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-13 12:45:14,241 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-13 12:45:14,242 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-13 12:45:14,244 - INFO -   [OK] Completitud del dataset: 100.0%
+2026-05-13 12:45:14,245 - INFO - Errores de validacion encontrados: 0
+2026-05-13 12:45:14,245 - INFO - Tiempo de validacion: 0.01 segundos
+2026-05-13 12:45:14,245 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-13 12:45:14,245 - INFO - ============================================================
+2026-05-13 12:45:14,245 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-13 12:45:14,245 - INFO - ============================================================
+2026-05-13 12:45:14,982 - INFO - Datos limpios guardados en: resultados/datos_limpios.csv
+2026-05-13 12:45:14,983 - INFO - Datos limpios guardados en: resultados/datos_limpios.csv
+2026-05-13 12:45:15,009 - INFO - Datos limpios guardados en: resultados/datos_limpios.csv
+2026-05-13 12:45:15,013 - INFO - Datos limpios guardados en: resultados/datos_limpios.csv
+2026-05-13 12:45:15,499 - INFO - Datos cargados en SQLite: resultados/prestamos.db
+2026-05-13 12:45:15,500 - INFO - Tabla 'prestamos' creada con 44993 filas
+2026-05-13 12:45:15,500 - INFO - Tiempo de carga: 1.27 segundos
+2026-05-13 12:45:15,500 - INFO - ============================================================
+2026-05-13 12:45:15,501 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-13 12:45:15,501 - INFO - ============================================================
+2026-05-13 12:45:15,501 - INFO - Estadisticas descriptivas:
+2026-05-13 12:45:15,576 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-13 12:45:15,577 - INFO - Distribucion de loan_status:
+2026-05-13 12:45:15,580 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-13 12:45:15,634 - INFO - Datos cargados en SQLite: resultados/prestamos.db
+2026-05-13 12:45:15,635 - INFO - Tabla 'prestamos' creada con 89986 filas
+2026-05-13 12:45:15,635 - INFO - Tiempo de carga: 1.40 segundos
+2026-05-13 12:45:15,635 - INFO - ============================================================
+2026-05-13 12:45:15,636 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-13 12:45:15,636 - INFO - ============================================================
+2026-05-13 12:45:15,636 - INFO - Estadisticas descriptivas:
+2026-05-13 12:45:15,722 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-13 12:45:15,722 - INFO - Distribucion de loan_status:
+2026-05-13 12:45:15,723 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-13 12:45:15,754 - INFO - Datos cargados en SQLite: resultados/prestamos.db
+2026-05-13 12:45:15,754 - INFO - Tabla 'prestamos' creada con 134979 filas
+2026-05-13 12:45:15,755 - INFO - Tiempo de carga: 1.51 segundos
+2026-05-13 12:45:15,755 - INFO - ============================================================
+2026-05-13 12:45:15,755 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-13 12:45:15,755 - INFO - ============================================================
+2026-05-13 12:45:15,756 - INFO - Estadisticas descriptivas:
+2026-05-13 12:45:15,828 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-13 12:45:15,828 - INFO - Distribucion de loan_status:
+2026-05-13 12:45:15,830 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-13 12:45:15,933 - INFO - Grafica guardada: resultados/distribucion_target.png
+2026-05-13 12:45:15,937 - INFO - Grafica guardada: resultados/distribucion_target.png
+2026-05-13 12:45:15,972 - INFO - Datos cargados en SQLite: resultados/prestamos.db
+2026-05-13 12:45:15,973 - INFO - Tabla 'prestamos' creada con 44993 filas
+2026-05-13 12:45:15,974 - INFO - Tiempo de carga: 1.75 segundos
+2026-05-13 12:45:15,974 - INFO - ============================================================
+2026-05-13 12:45:15,974 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-13 12:45:15,974 - INFO - ============================================================
+2026-05-13 12:45:15,974 - INFO - Estadisticas descriptivas:
+2026-05-13 12:45:16,050 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-13 12:45:16,050 - INFO - Distribucion de loan_status:
+2026-05-13 12:45:16,051 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-13 12:45:16,098 - INFO - Grafica guardada: resultados/distribucion_target.png
+2026-05-13 12:45:16,204 - INFO - Grafica guardada: resultados/distribucion_edad.png
+2026-05-13 12:45:16,246 - INFO - Grafica guardada: resultados/distribucion_edad.png
+2026-05-13 12:45:16,421 - INFO - Grafica guardada: resultados/distribucion_target.png
+2026-05-13 12:45:16,599 - INFO - Grafica guardada: resultados/distribucion_edad.png
+2026-05-13 12:45:17,372 - INFO - Grafica guardada: resultados/tasa_interes_por_status.png
+2026-05-13 12:45:17,372 - INFO - ============================================================
+2026-05-13 12:45:17,372 - INFO - MODELO DE CLASIFICACION
+2026-05-13 12:45:17,372 - INFO - ============================================================
+2026-05-13 12:45:17,405 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-13 12:45:17,405 - INFO - Datos de prueba: 13498 filas
+2026-05-13 12:45:17,405 - INFO - ----------------------------------------
+2026-05-13 12:45:17,405 - INFO - MODELO 1: Arbol de Decision
+2026-05-13 12:45:17,413 - INFO - Grafica guardada: resultados/tasa_interes_por_status.png
+2026-05-13 12:45:17,413 - INFO - ============================================================
+2026-05-13 12:45:17,413 - INFO - MODELO DE CLASIFICACION
+2026-05-13 12:45:17,414 - INFO - ============================================================
+2026-05-13 12:45:17,478 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-13 12:45:17,480 - INFO - Datos de prueba: 13498 filas
+2026-05-13 12:45:17,480 - INFO - ----------------------------------------
+2026-05-13 12:45:17,480 - INFO - MODELO 1: Arbol de Decision
+2026-05-13 12:45:17,560 - INFO - Accuracy: 0.9128
+2026-05-13 12:45:17,566 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-13 12:45:17,594 - INFO - Grafica guardada: resultados/distribucion_edad.png
+2026-05-13 12:45:17,598 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-13 12:45:17,643 - INFO - Accuracy: 0.9128
+2026-05-13 12:45:17,648 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-13 12:45:17,661 - INFO - Grafica guardada: resultados/tasa_interes_por_status.png
+2026-05-13 12:45:17,661 - INFO - ============================================================
+2026-05-13 12:45:17,661 - INFO - MODELO DE CLASIFICACION
+2026-05-13 12:45:17,661 - INFO - ============================================================
+2026-05-13 12:45:17,669 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-13 12:45:17,687 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-13 12:45:17,687 - INFO - Datos de prueba: 13498 filas
+2026-05-13 12:45:17,688 - INFO - ----------------------------------------
+2026-05-13 12:45:17,688 - INFO - MODELO 1: Arbol de Decision
+2026-05-13 12:45:17,835 - INFO - Accuracy: 0.9128
+2026-05-13 12:45:17,841 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-13 12:45:17,870 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-13 12:45:18,422 - INFO - Grafica guardada: resultados/tasa_interes_por_status.png
+2026-05-13 12:45:18,422 - INFO - ============================================================
+2026-05-13 12:45:18,422 - INFO - MODELO DE CLASIFICACION
+2026-05-13 12:45:18,423 - INFO - ============================================================
+2026-05-13 12:45:18,480 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-13 12:45:18,481 - INFO - Datos de prueba: 13498 filas
+2026-05-13 12:45:18,481 - INFO - ----------------------------------------
+2026-05-13 12:45:18,481 - INFO - MODELO 1: Arbol de Decision
+2026-05-13 12:45:18,597 - INFO - Accuracy: 0.9128
+2026-05-13 12:45:18,601 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-13 12:45:18,624 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-13 12:45:19,698 - INFO - Grafica guardada: resultados/arbol_decision.png
+2026-05-13 12:45:19,699 - INFO - ----------------------------------------
+2026-05-13 12:45:19,699 - INFO - MODELO 2: Regresion Logistica
+2026-05-13 12:45:19,757 - INFO - Grafica guardada: resultados/arbol_decision.png
+2026-05-13 12:45:19,757 - INFO - ----------------------------------------
+2026-05-13 12:45:19,757 - INFO - MODELO 2: Regresion Logistica
+2026-05-13 12:45:19,899 - INFO - Grafica guardada: resultados/arbol_decision.png
+2026-05-13 12:45:19,900 - INFO - ----------------------------------------
+2026-05-13 12:45:19,900 - INFO - MODELO 2: Regresion Logistica
+2026-05-13 12:45:20,830 - INFO - Grafica guardada: resultados/arbol_decision.png
+2026-05-13 12:45:20,830 - INFO - ----------------------------------------
+2026-05-13 12:45:20,831 - INFO - MODELO 2: Regresion Logistica
+2026-05-13 12:45:28,179 - INFO - Accuracy: 0.8854
+2026-05-13 12:45:28,183 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-13 12:45:28,253 - INFO - Accuracy: 0.8854
+2026-05-13 12:45:28,253 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-13 12:45:28,254 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-13 12:45:28,254 - INFO - ============================================================
+2026-05-13 12:45:28,255 - INFO - ANALISIS DE EQUIDAD POR GENERO
+2026-05-13 12:45:28,255 - INFO - ============================================================
+2026-05-13 12:45:28,264 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-13 12:45:28,285 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2026-05-13 12:45:28,298 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-13 12:45:28,303 - INFO - Accuracy: 0.8854
+2026-05-13 12:45:28,308 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-13 12:45:28,320 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-13 12:45:28,320 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-13 12:45:28,320 - INFO - ============================================================
+2026-05-13 12:45:28,320 - INFO - ANALISIS DE EQUIDAD POR GENERO
+2026-05-13 12:45:28,320 - INFO - ============================================================
+2026-05-13 12:45:28,331 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-13 12:45:28,331 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-13 12:45:28,332 - INFO - ============================================================
+2026-05-13 12:45:28,331 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2:45:28,332 - INFO - ============================================================
+2026-05-13 12:45:28,342 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-13 12:45:28,342 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2026-05-13 12:45:28,347 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-13 12:45:28,540 - INFO - Grafica guardada: resultados/equidad_genero.png
+2026-05-13 12:45:28,541 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-13 12:45:28,541 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-13 12:45:28,541 - INFO - ============================================================
+2026-05-13 12:45:28,542 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-13 12:45:28,542 - INFO - ============================================================
+2026-05-13 12:45:28,542 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-13 12:45:28,542 - INFO - Tiempo total del pipeline: 1.63 segundos
+2026-05-13 12:45:28,542 - INFO -   - Ingesta: 0.21s
+2026-05-13 12:45:28,542 - INFO -   - Limpieza: 0.14s
+2026-05-13 12:45:28,542 - INFO -   - Validacion: 0.01s
+2026-05-13 12:45:28,543 - INFO -   - Carga: 1.27s
+2026-05-13 12:45:28,543 - INFO - Filas procesadas: 44993
+2026-05-13 12:45:28,543 - INFO - Filas descartadas: 7
+2026-05-13 12:45:28,543 - INFO - Completitud: 100.0%
+2026-05-13 12:45:28,543 - INFO - Errores de validacion: 0
+2026-05-13 12:45:28,545 - INFO - Reporte guardado en: resultados/reporte.txt
+2026-05-13 12:45:28,545 - INFO - 
+2026-05-13 12:45:28,545 - INFO - ============================================================
+2026-05-13 12:45:28,545 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-13 12:45:28,545 - INFO - Resultados en la carpeta 'resultados/'
+2026-05-13 12:45:28,545 - INFO - ============================================================
+2026-05-13 12:45:28,564 - INFO - Grafica guardada: resultados/equidad_genero.png
+2026-05-13 12:45:28,564 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-13 12:45:28,565 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-13 12:45:28,565 - INFO - ============================================================
+2026-05-13 12:45:28,565 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-13 12:45:28,565 - INFO - ============================================================
+2026-05-13 12:45:28,565 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-13 12:45:28,565 - INFO - Tiempo total del pipeline: 1.76 segundos
+2026-05-13 12:45:28,565 - INFO -   - Ingesta: 0.20s
+2026-05-13 12:45:28,565 - INFO -   - Limpieza: 0.15s
+2026-05-13 12:45:28,565 - INFO -   - Validacion: 0.01s
+2026-05-13 12:45:28,565 - INFO -   - Carga: 1.40s
+2026-05-13 12:45:28,566 - INFO - Filas procesadas: 44993
+2026-05-13 12:45:28,566 - INFO - Filas descartadas: 7
+2026-05-13 12:45:28,566 - INFO - Completitud: 100.0%
+2026-05-13 12:45:28,566 - INFO - Grafica guardada: resultados/equidad_genero.png
+2026-05-13 12:45:28,566 - INFO - Errores de validacion: 0
+2026-05-13 12:45:28,566 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-13 12:45:28,566 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-13 12:45:28,566 - INFO - ============================================================
+2026-05-13 12:45:28,566 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-13 12:45:28,566 - INFO - ============================================================
+2026-05-13 12:45:28,566 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-13 12:45:28,567 - INFO - Tiempo total del pipeline: 1.88 segundos
+2026-05-13 12:45:28,567 - INFO -   - Ingesta: 0.20s
+2026-05-13 12:45:28,567 - INFO -   - Limpieza: 0.16s
+2026-05-13 12:45:28,567 - INFO - Reporte guardado en: resultados/reporte.txt
+2026-05-13 12:45:28,567 - INFO -   - Validacion: 0.01s
+2026-05-13 12:45:28,567 - INFO - 
+2026-05-13 12:45:28,567 - INFO -   - Carga: 1.51s
+2026-05-13 12:45:28,567 - INFO - ============================================================
+2026-05-13 12:45:28,567 - INFO - Filas procesadas: 44993
+2026-05-13 12:45:28,567 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-13 12:45:28,567 - INFO - Filas descartadas: 7
+2026-05-13 12:45:28,567 - INFO - Resultados en la carpeta 'resultados/'
+2026-05-13 12:45:28,567 - INFO - Completitud: 100.0%
+2026-05-13 12:45:28,567 - INFO - ============================================================
+2026-05-13 12:45:28,567 - INFO - Errores de validacion: 0
+2026-05-13 12:45:28,568 - INFO - Reporte guardado en: resultados/reporte.txt
+2026-05-13 12:45:28,568 - INFO - 
+2026-05-13 12:45:28,569 - INFO - ============================================================
+2026-05-13 12:45:28,569 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-13 12:45:28,569 - INFO - Resultados en la carpeta 'resultados/'
+2026-05-13 12:45:28,569 - INFO - ============================================================
+2026-05-13 12:45:28,949 - INFO - Accuracy: 0.8854
+2026-05-13 12:45:28,957 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-13 12:45:28,979 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-13 12:45:28,980 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-13 12:45:28,980 - INFO - ============================================================
+2026-05-13 12:45:28,980 - INFO - ANALISIS DE EQUIDAD POR GENERO
+2026-05-13 12:45:28,980 - INFO - ============================================================
+2026-05-13 12:45:28,989 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2026-05-13 12:45:28,995 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-13 12:45:29,683 - INFO - Grafica guardada: resultados/equidad_genero.png
+2026-05-13 12:45:29,683 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-13 12:45:29,684 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-13 12:45:29,684 - INFO - ============================================================
+2026-05-13 12:45:29,684 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-13 12:45:29,684 - INFO - ============================================================
+2026-05-13 12:45:29,684 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-13 12:45:29,685 - INFO - Tiempo total del pipeline: 2.10 segundos
+2026-05-13 12:45:29,685 - INFO -   - Ingesta: 0.21s
+2026-05-13 12:45:29,685 - INFO -   - Limpieza: 0.13s
+2026-05-13 12:45:29,685 - INFO -   - Validacion: 0.01s
+2026-05-13 12:45:29,685 - INFO -   - Carga: 1.75s
+2026-05-13 12:45:29,685 - INFO - Filas procesadas: 44993
+2026-05-13 12:45:29,686 - INFO - Filas descartadas: 7
+2026-05-13 12:45:29,686 - INFO - Completitud: 100.0%
+2026-05-13 12:45:29,686 - INFO - Errores de validacion: 0
+2026-05-13 12:45:29,702 - INFO - Reporte guardado en: resultados/reporte.txt
+2026-05-13 12:45:29,702 - INFO - 
+2026-05-13 12:45:29,703 - INFO - ============================================================
+2026-05-13 12:45:29,703 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-13 12:45:29,703 - INFO - Resultados en la carpeta 'resultados/'
+2026-05-13 12:45:29,703 - INFO - ============================================================
+2026-05-13 12:47:00,951 - INFO - ============================================================
+2026-05-13 12:47:00,951 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-13 12:47:00,951 - INFO - ============================================================
+2026-05-13 12:47:01,020 - INFO - Datos cargados desde: datos/loan_data.csv
+2026-05-13 12:47:01,020 - INFO - Filas: 45000, Columnas: 14
+2026-05-13 12:47:01,021 - INFO - Tiempo de ingesta: 0.07 segundos
+2026-05-13 12:47:01,021 - INFO - Primeras 5 filas:
+2026-05-13 12:47:01,037 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-13 12:47:01,037 - INFO - Tipos de datos:
+2026-05-13 12:47:01,038 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-13 12:47:01,038 - INFO - ============================================================
+2026-05-13 12:47:01,038 - INFO - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+2026-05-13 12:47:01,038 - INFO - ============================================================
+2026-05-13 12:47:01,038 - INFO - Valores nulos por columna:
+2026-05-13 12:47:01,047 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-13 12:47:01,057 - INFO - Filas eliminadas por nulos: 0
+2026-05-13 12:47:01,069 - INFO - Filas eliminadas por outliers: 7
+2026-05-13 12:47:01,069 - INFO - Filas restantes despues de limpieza: 44993
+2026-05-13 12:47:01,070 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-13 12:47:01,070 - INFO - Los valores de loan_int_rate ya estan en porcentaje, no se necesita conversion.
+2026-05-13 12:47:01,072 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-13 12:47:01,080 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-13 12:47:01,087 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-13 12:47:01,094 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-13 12:47:01,101 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-13 12:47:01,107 - INFO - Tiempo de limpieza: 0.07 segundos
+2026-05-13 12:47:01,107 - INFO - ============================================================
+2026-05-13 12:47:01,107 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-13 12:47:01,107 - INFO - ============================================================
+2026-05-13 12:47:01,107 - INFO - --- Validacion Estructural ---
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'person_age' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'person_education' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'person_income' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'person_emp_exp' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'person_home_ownership' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-13 12:47:01,107 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-13 12:47:01,109 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-13 12:47:01,109 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-13 12:47:01,109 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-13 12:47:01,109 - INFO - --- Validacion Semantica ---
+2026-05-13 12:47:01,109 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-13 12:47:01,110 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-13 12:47:01,110 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-13 12:47:01,110 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-13 12:47:01,112 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-13 12:47:01,113 - INFO -   [OK] Completitud del dataset: 100.0%
+2026-05-13 12:47:01,113 - INFO - Errores de validacion encontrados: 0
+2026-05-13 12:47:01,113 - INFO - Tiempo de validacion: 0.01 segundos
+2026-05-13 12:47:01,113 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-13 12:47:01,113 - INFO - ============================================================
+2026-05-13 12:47:01,113 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-13 12:47:01,113 - INFO - ============================================================
+2026-05-13 12:47:01,310 - INFO - Datos limpios guardados en: resultados/datos_limpios.csv
+2026-05-13 12:47:01,428 - INFO - Datos cargados en SQLite: resultados/prestamos.db
+2026-05-13 12:47:01,429 - INFO - Tabla 'prestamos' creada con 44993 filas
+2026-05-13 12:47:01,429 - INFO - Tiempo de carga: 0.32 segundos
+2026-05-13 12:47:01,429 - INFO - ============================================================
+2026-05-13 12:47:01,429 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-13 12:47:01,429 - INFO - ============================================================
+2026-05-13 12:47:01,429 - INFO - Estadisticas descriptivas:
+2026-05-13 12:47:01,471 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-13 12:47:01,472 - INFO - Distribucion de loan_status:
+2026-05-13 12:47:01,474 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-13 12:47:01,635 - INFO - Grafica guardada: resultados/distribucion_target.png
+2026-05-13 12:47:01,771 - INFO - Grafica guardada: resultados/distribucion_edad.png
+2026-05-13 12:47:01,897 - INFO - Grafica guardada: resultados/tasa_interes_por_status.png
+2026-05-13 12:47:01,897 - INFO - ============================================================
+2026-05-13 12:47:01,897 - INFO - MODELO DE CLASIFICACION
+2026-05-13 12:47:01,897 - INFO - ============================================================
+2026-05-13 12:47:01,905 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-13 12:47:01,906 - INFO - Datos de prueba: 13498 filas
+2026-05-13 12:47:01,906 - INFO - ----------------------------------------
+2026-05-13 12:47:01,906 - INFO - MODELO 1: Arbol de Decision
+2026-05-13 12:47:01,964 - INFO - Accuracy: 0.9128
+2026-05-13 12:47:01,966 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-13 12:47:01,974 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-13 12:47:02,398 - INFO - Grafica guardada: resultados/arbol_decision.png
+2026-05-13 12:47:02,398 - INFO - ----------------------------------------
+2026-05-13 12:47:02,398 - INFO - MODELO 2: Regresion Logistica
+2026-05-13 12:47:04,291 - INFO - Accuracy: 0.8854
+2026-05-13 12:47:04,292 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-13 12:47:04,299 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-13 12:47:04,299 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-13 12:47:04,299 - INFO - ============================================================
+2026-05-13 12:47:04,300 - INFO - ANALISIS DE EQUIDAD POR GENERO
+2026-05-13 12:47:04,300 - INFO - ============================================================
+2026-05-13 12:47:04,303 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2026-05-13 12:47:04,305 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-13 12:47:04,373 - INFO - Grafica guardada: resultados/equidad_genero.png
+2026-05-13 12:47:04,373 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-13 12:47:04,373 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-13 12:47:04,373 - INFO - ============================================================
+2026-05-13 12:47:04,373 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-13 12:47:04,373 - INFO - ============================================================
+2026-05-13 12:47:04,373 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-13 12:47:04,373 - INFO - Tiempo total del pipeline: 0.46 segundos
+2026-05-13 12:47:04,374 - INFO -   - Ingesta: 0.07s
+2026-05-13 12:47:04,374 - INFO -   - Limpieza: 0.07s
+2026-05-13 12:47:04,374 - INFO -   - Validacion: 0.01s
+2026-05-13 12:47:04,374 - INFO -   - Carga: 0.32s
+2026-05-13 12:47:04,374 - INFO - Filas procesadas: 44993
+2026-05-13 12:47:04,374 - INFO - Filas descartadas: 7
+2026-05-13 12:47:04,374 - INFO - Completitud: 100.0%
+2026-05-13 12:47:04,374 - INFO - Errores de validacion: 0
+2026-05-13 12:47:04,374 - INFO - Reporte guardado en: resultados/reporte.txt
+2026-05-13 12:47:04,374 - INFO - 
+2026-05-13 12:47:04,374 - INFO - ============================================================
+2026-05-13 12:47:04,374 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-13 12:47:04,375 - INFO - Resultados en la carpeta 'resultados/'
+2026-05-13 12:47:04,375 - INFO - ============================================================
+2026-05-13 13:34:32,021 - INFO - ============================================================
+2026-05-13 13:34:32,021 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-13 13:34:32,021 - INFO - ============================================================
+2026-05-13 13:34:32,072 - INFO - Datos cargados desde: C:\PROJECTOSCLAU\GestionDeDatos\01_Datos_Sucios\loan_data.csv
+2026-05-13 13:34:32,072 - INFO - Filas: 45000, Columnas: 14
+2026-05-13 13:34:32,072 - INFO - Tiempo de ingesta: 0.05 segundos
+2026-05-13 13:34:32,072 - INFO - Primeras 5 filas:
+2026-05-13 13:34:32,084 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-13 13:34:32,084 - INFO - Tipos de datos:
+2026-05-13 13:34:32,085 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-13 13:34:32,085 - INFO - ============================================================
+2026-05-13 13:34:32,085 - INFO - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+2026-05-13 13:34:32,085 - INFO - ============================================================
+2026-05-13 13:34:32,085 - INFO - Valores nulos por columna:
+2026-05-13 13:34:32,090 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-13 13:34:32,098 - INFO - Filas eliminadas por nulos: 0
+2026-05-13 13:34:32,108 - INFO - Filas eliminadas por outliers: 7
+2026-05-13 13:34:32,109 - INFO - Filas restantes despues de limpieza: 44993
+2026-05-13 13:34:32,109 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-13 13:34:32,109 - INFO - Los valores de loan_int_rate ya estan en porcentaje, no se necesita conversion.
+2026-05-13 13:34:32,111 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-13 13:34:32,116 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-13 13:34:32,122 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-13 13:34:32,128 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-13 13:34:32,133 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-13 13:34:32,137 - INFO - Tiempo de limpieza: 0.05 segundos
+2026-05-13 13:34:32,138 - INFO - ============================================================
+2026-05-13 13:34:32,138 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-13 13:34:32,138 - INFO - ============================================================
+2026-05-13 13:34:32,138 - INFO - --- Validacion Estructural ---
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'person_age' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'person_education' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'person_income' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'person_emp_exp' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'person_home_ownership' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-13 13:34:32,138 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-13 13:34:32,139 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-13 13:34:32,139 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-13 13:34:32,140 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-13 13:34:32,140 - INFO - --- Validacion Semantica ---
+2026-05-13 13:34:32,140 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-13 13:34:32,140 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-13 13:34:32,140 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-13 13:34:32,141 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-13 13:34:32,142 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-13 13:34:32,142 - INFO -   [OK] Completitud del dataset: 100.0%
+2026-05-13 13:34:32,142 - INFO - Errores de validacion encontrados: 0
+2026-05-13 13:34:32,143 - INFO - Tiempo de validacion: 0.00 segundos
+2026-05-13 13:34:32,143 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-13 13:34:32,143 - INFO - ============================================================
+2026-05-13 13:34:32,143 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-13 13:34:32,143 - INFO - ============================================================
+2026-05-13 13:34:32,296 - INFO - Datos limpios guardados en: 03_EDA_Resultados/datos_limpios.csv
+2026-05-13 13:34:32,387 - INFO - Datos cargados en SQLite: 03_EDA_Resultados/prestamos.db
+2026-05-13 13:34:32,387 - INFO - Tabla 'prestamos' creada con 44993 filas
+2026-05-13 13:34:32,387 - INFO - Tiempo de carga: 0.24 segundos
+2026-05-13 13:34:32,387 - INFO - ============================================================
+2026-05-13 13:34:32,387 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-13 13:34:32,387 - INFO - ============================================================
+2026-05-13 13:34:32,387 - INFO - Estadisticas descriptivas:
+2026-05-13 13:34:32,417 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-13 13:34:32,417 - INFO - Distribucion de loan_status:
+2026-05-13 13:34:32,420 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-13 13:34:32,517 - INFO - Grafica guardada: 03_EDA_Resultados/distribucion_target.png
+2026-05-13 13:34:32,597 - INFO - Grafica guardada: 03_EDA_Resultados/distribucion_edad.png
+2026-05-13 13:34:32,686 - INFO - Grafica guardada: 03_EDA_Resultados/tasa_interes_por_status.png
+2026-05-13 13:34:32,687 - INFO - ============================================================
+2026-05-13 13:34:32,687 - INFO - MODELO DE CLASIFICACION
+2026-05-13 13:34:32,687 - INFO - ============================================================
+2026-05-13 13:34:32,694 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-13 13:34:32,694 - INFO - Datos de prueba: 13498 filas
+2026-05-13 13:34:32,694 - INFO - ----------------------------------------
+2026-05-13 13:34:32,694 - INFO - MODELO 1: Arbol de Decision
+2026-05-13 13:34:32,742 - INFO - Accuracy: 0.9128
+2026-05-13 13:34:32,744 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-13 13:34:32,749 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-13 13:34:33,066 - INFO - Grafica guardada: 03_EDA_Resultados/arbol_decision.png
+2026-05-13 13:34:33,067 - INFO - ----------------------------------------
+2026-05-13 13:34:33,067 - INFO - MODELO 2: Regresion Logistica
+2026-05-13 13:34:34,389 - INFO - Accuracy: 0.8854
+2026-05-13 13:34:34,390 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-13 13:34:34,394 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-13 13:34:34,395 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-13 13:34:34,395 - INFO - ============================================================
+2026-05-13 13:34:34,395 - INFO - ANALISIS DE EQUIDAD POR GENERO
+2026-05-13 13:34:34,395 - INFO - ============================================================
+2026-05-13 13:34:34,398 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2026-05-13 13:34:34,399 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-13 13:34:34,448 - INFO - Grafica guardada: 03_EDA_Resultados/equidad_genero.png
+2026-05-13 13:34:34,448 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-13 13:34:34,448 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-13 13:34:34,448 - INFO - ============================================================
+2026-05-13 13:34:34,448 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-13 13:34:34,448 - INFO - ============================================================
+2026-05-13 13:34:34,448 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-13 13:34:34,448 - INFO - Tiempo total del pipeline: 0.35 segundos
+2026-05-13 13:34:34,448 - INFO -   - Ingesta: 0.05s
+2026-05-13 13:34:34,448 - INFO -   - Limpieza: 0.05s
+2026-05-13 13:34:34,448 - INFO -   - Validacion: 0.00s
+2026-05-13 13:34:34,448 - INFO -   - Carga: 0.24s
+2026-05-13 13:34:34,448 - INFO - Filas procesadas: 44993
+2026-05-13 13:34:34,448 - INFO - Filas descartadas: 7
+2026-05-13 13:34:34,448 - INFO - Completitud: 100.0%
+2026-05-13 13:34:34,448 - INFO - Errores de validacion: 0
+2026-05-13 13:34:34,449 - INFO - Reporte guardado en: 03_EDA_Resultados/reporte.txt
+2026-05-13 13:34:34,449 - INFO - 
+2026-05-13 13:34:34,449 - INFO - ============================================================
+2026-05-13 13:34:34,449 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-13 13:34:34,449 - INFO - Resultados en la carpeta '03_EDA_Resultados/'
+2026-05-13 13:34:34,449 - INFO - ============================================================
+2026-05-19 22:35:42,316 - INFO - ============================================================
+2026-05-19 22:35:42,316 - INFO - ETAPA 1: INGESTA DE DATOS
+2026-05-19 22:35:42,316 - INFO - ============================================================
+2026-05-19 22:35:42,371 - INFO - Datos cargados desde: C:\PROJECTOSCLAU\GestionDeDatos\01_Datos_Sucios\loan_data.csv
+2026-05-19 22:35:42,372 - INFO - Filas: 45000, Columnas: 14
+2026-05-19 22:35:42,372 - INFO - Tiempo de ingesta: 0.05 segundos
+2026-05-19 22:35:42,373 - INFO - Primeras 5 filas:
+2026-05-19 22:35:42,383 - INFO - 
+   person_age person_gender  ... previous_loan_defaults_on_file  loan_status
+0        22.0        female  ...                             No            1
+1        21.0        female  ...                            Yes            0
+2        25.0        female  ...                             No            1
+3        23.0        female  ...                             No            1
+4        24.0          male  ...                             No            1
+
+[5 rows x 14 columns]
+2026-05-19 22:35:42,384 - INFO - Tipos de datos:
+2026-05-19 22:35:42,384 - INFO - 
+person_age                        float64
+person_gender                      object
+person_education                   object
+person_income                     float64
+person_emp_exp                      int64
+person_home_ownership              object
+loan_amnt                         float64
+loan_intent                        object
+loan_int_rate                     float64
+loan_percent_income               float64
+cb_person_cred_hist_length        float64
+credit_score                        int64
+previous_loan_defaults_on_file     object
+loan_status                         int64
+dtype: object
+2026-05-19 22:35:42,385 - INFO - ============================================================
+2026-05-19 22:35:42,385 - INFO - ETAPA 2: LIMPIEZA Y TRANSFORMACION
+2026-05-19 22:35:42,385 - INFO - ============================================================
+2026-05-19 22:35:42,385 - INFO - Valores nulos por columna:
+2026-05-19 22:35:42,393 - INFO - 
+person_age                        0
+person_gender                     0
+person_education                  0
+person_income                     0
+person_emp_exp                    0
+person_home_ownership             0
+loan_amnt                         0
+loan_intent                       0
+loan_int_rate                     0
+loan_percent_income               0
+cb_person_cred_hist_length        0
+credit_score                      0
+previous_loan_defaults_on_file    0
+loan_status                       0
+dtype: int64
+2026-05-19 22:35:42,402 - INFO - Filas eliminadas por nulos: 0
+2026-05-19 22:35:42,415 - INFO - Filas eliminadas por outliers: 7
+2026-05-19 22:35:42,415 - INFO - Filas restantes despues de limpieza: 44993
+2026-05-19 22:35:42,416 - INFO - loan_int_rate - Min: 5.42, Max: 20.0, Promedio: 11.01
+2026-05-19 22:35:42,416 - INFO - Los valores de loan_int_rate ya estan en porcentaje, no se necesita conversion.
+2026-05-19 22:35:42,417 - INFO - Codificando person_gender: ['female', 'male']
+2026-05-19 22:35:42,424 - INFO - Codificando person_education: ['Master', 'High School', 'Bachelor', 'Associate', 'Doctorate']
+2026-05-19 22:35:42,430 - INFO - Codificando person_home_ownership: ['RENT', 'OWN', 'MORTGAGE', 'OTHER']
+2026-05-19 22:35:42,436 - INFO - Codificando loan_intent: ['PERSONAL', 'EDUCATION', 'MEDICAL', 'VENTURE', 'HOMEIMPROVEMENT', 'DEBTCONSOLIDATION']
+2026-05-19 22:35:42,442 - INFO - Codificando previous_loan_defaults_on_file: ['No', 'Yes']
+2026-05-19 22:35:42,448 - INFO - Tiempo de limpieza: 0.06 segundos
+2026-05-19 22:35:42,448 - INFO - ============================================================
+2026-05-19 22:35:42,448 - INFO - ETAPA 3: VALIDACION ESTRUCTURAL Y SEMANTICA
+2026-05-19 22:35:42,448 - INFO - ============================================================
+2026-05-19 22:35:42,448 - INFO - --- Validacion Estructural ---
+2026-05-19 22:35:42,448 - INFO -   [OK] Columna 'person_age' presente
+2026-05-19 22:35:42,448 - INFO -   [OK] Columna 'person_gender' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'person_education' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'person_income' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'person_emp_exp' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'person_home_ownership' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'loan_amnt' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'loan_intent' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'loan_int_rate' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'loan_percent_income' presente
+2026-05-19 22:35:42,449 - INFO -   [OK] Columna 'cb_person_cred_hist_length' presente
+2026-05-19 22:35:42,450 - INFO -   [OK] Columna 'credit_score' presente
+2026-05-19 22:35:42,450 - INFO -   [OK] Columna 'previous_loan_defaults_on_file' presente
+2026-05-19 22:35:42,450 - INFO -   [OK] Columna 'loan_status' presente
+2026-05-19 22:35:42,451 - INFO -   [OK] No hay valores nulos en el dataset
+2026-05-19 22:35:42,451 - INFO -   [OK] Cantidad de filas: 44993
+2026-05-19 22:35:42,451 - INFO -   [OK] Cantidad de columnas: 14
+2026-05-19 22:35:42,451 - INFO - --- Validacion Semantica ---
+2026-05-19 22:35:42,452 - INFO -   [OK] Edades en rango valido (18-100): min=20.0, max=94.0
+2026-05-19 22:35:42,452 - INFO -   [OK] Ingresos no negativos: min=8000.0
+2026-05-19 22:35:42,452 - INFO -   [OK] Credit score en rango valido (300-850): min=390, max=784
+2026-05-19 22:35:42,453 - INFO -   [OK] Tasa de interes en rango valido (0-100%): min=5.42, max=20.0
+2026-05-19 22:35:42,453 - INFO -   [OK] Variable objetivo loan_status es binaria (0 y 1)
+2026-05-19 22:35:42,455 - INFO -   [OK] Completitud del dataset: 100.0%
+2026-05-19 22:35:42,455 - INFO - Errores de validacion encontrados: 0
+2026-05-19 22:35:42,455 - INFO - Tiempo de validacion: 0.01 segundos
+2026-05-19 22:35:42,455 - INFO - VALIDACION EXITOSA - Datos listos para carga
+2026-05-19 22:35:42,455 - INFO - ============================================================
+2026-05-19 22:35:42,455 - INFO - ETAPA 4: CARGA DE DATOS
+2026-05-19 22:35:42,456 - INFO - ============================================================
+2026-05-19 22:35:42,636 - INFO - Datos limpios guardados en: 03_EDA_Resultados/datos_limpios.csv
+2026-05-19 22:35:42,742 - INFO - Datos cargados en SQLite: 03_EDA_Resultados/prestamos.db
+2026-05-19 22:35:42,743 - INFO - Tabla 'prestamos' creada con 44993 filas
+2026-05-19 22:35:42,743 - INFO - Tiempo de carga: 0.29 segundos
+2026-05-19 22:35:42,743 - INFO - ============================================================
+2026-05-19 22:35:42,743 - INFO - ANALISIS EXPLORATORIO (EDA)
+2026-05-19 22:35:42,743 - INFO - ============================================================
+2026-05-19 22:35:42,744 - INFO - Estadisticas descriptivas:
+2026-05-19 22:35:42,783 - INFO - 
+         person_age  ...   loan_status
+count  44993.000000  ...  44993.000000
+mean      27.748428  ...      0.222257
+std        5.909737  ...      0.415767
+min       20.000000  ...      0.000000
+25%       24.000000  ...      0.000000
+50%       26.000000  ...      0.000000
+75%       30.000000  ...      0.000000
+max       94.000000  ...      1.000000
+
+[8 rows x 14 columns]
+2026-05-19 22:35:42,783 - INFO - Distribucion de loan_status:
+2026-05-19 22:35:42,784 - INFO - 
+loan_status
+0    34993
+1    10000
+Name: count, dtype: int64
+2026-05-19 22:35:42,968 - INFO - Grafica guardada: 03_EDA_Resultados/distribucion_target.png
+2026-05-19 22:35:43,077 - INFO - Grafica guardada: 03_EDA_Resultados/distribucion_edad.png
+2026-05-19 22:35:43,187 - INFO - Grafica guardada: 03_EDA_Resultados/tasa_interes_por_status.png
+2026-05-19 22:35:43,188 - INFO - ============================================================
+2026-05-19 22:35:43,188 - INFO - MODELO DE CLASIFICACION
+2026-05-19 22:35:43,188 - INFO - ============================================================
+2026-05-19 22:35:43,196 - INFO - Datos de entrenamiento: 31495 filas
+2026-05-19 22:35:43,196 - INFO - Datos de prueba: 13498 filas
+2026-05-19 22:35:43,196 - INFO - ----------------------------------------
+2026-05-19 22:35:43,197 - INFO - MODELO 1: Arbol de Decision
+2026-05-19 22:35:43,246 - INFO - Accuracy: 0.9128
+2026-05-19 22:35:43,247 - INFO - Matriz de confusion:
+[[10196   294]
+ [  883  2125]]
+2026-05-19 22:35:43,255 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.97      0.95     10490
+           1       0.88      0.71      0.78      3008
+
+    accuracy                           0.91     13498
+   macro avg       0.90      0.84      0.86     13498
+weighted avg       0.91      0.91      0.91     13498
+
+2026-05-19 22:35:43,652 - INFO - Grafica guardada: 03_EDA_Resultados/arbol_decision.png
+2026-05-19 22:35:43,652 - INFO - ----------------------------------------
+2026-05-19 22:35:43,652 - INFO - MODELO 2: Regresion Logistica
+2026-05-19 22:35:45,170 - INFO - Accuracy: 0.8854
+2026-05-19 22:35:45,172 - INFO - Matriz de confusion:
+[[9753  737]
+ [ 810 2198]]
+2026-05-19 22:35:45,179 - INFO - Reporte:
+              precision    recall  f1-score   support
+
+           0       0.92      0.93      0.93     10490
+           1       0.75      0.73      0.74      3008
+
+    accuracy                           0.89     13498
+   macro avg       0.84      0.83      0.83     13498
+weighted avg       0.88      0.89      0.88     13498
+
+2026-05-19 22:35:45,179 - INFO - Mejor modelo: Arbol de Decision con accuracy 0.9128
+2026-05-19 22:35:45,179 - INFO - ============================================================
+2026-05-19 22:35:45,179 - INFO - ANALISIS DE EQUIDAD POR GENERO
+2026-05-19 22:35:45,179 - INFO - ============================================================
+2026-05-19 22:35:45,182 - INFO - Accuracy para male: 0.9154 (7506 muestras)
+2026-05-19 22:35:45,184 - INFO - Accuracy para female: 0.9095 (5992 muestras)
+2026-05-19 22:35:45,246 - INFO - Grafica guardada: 03_EDA_Resultados/equidad_genero.png
+2026-05-19 22:35:45,246 - INFO - Diferencia de accuracy entre generos: 0.0059
+2026-05-19 22:35:45,247 - INFO - La diferencia es menor al 5%, el modelo es razonablemente equitativo.
+2026-05-19 22:35:45,247 - INFO - ============================================================
+2026-05-19 22:35:45,247 - INFO - REPORTE FINAL Y KPIs DEL PIPELINE
+2026-05-19 22:35:45,247 - INFO - ============================================================
+2026-05-19 22:35:45,247 - INFO - --- KPIs de Monitoreo del Pipeline ---
+2026-05-19 22:35:45,247 - INFO - Tiempo total del pipeline: 0.41 segundos
+2026-05-19 22:35:45,248 - INFO -   - Ingesta: 0.05s
+2026-05-19 22:35:45,248 - INFO -   - Limpieza: 0.06s
+2026-05-19 22:35:45,248 - INFO -   - Validacion: 0.01s
+2026-05-19 22:35:45,248 - INFO -   - Carga: 0.29s
+2026-05-19 22:35:45,248 - INFO - Filas procesadas: 44993
+2026-05-19 22:35:45,248 - INFO - Filas descartadas: 7
+2026-05-19 22:35:45,248 - INFO - Completitud: 100.0%
+2026-05-19 22:35:45,248 - INFO - Errores de validacion: 0
+2026-05-19 22:35:45,249 - INFO - Reporte guardado en: 03_EDA_Resultados/reporte.txt
+2026-05-19 22:35:45,249 - INFO - 
+2026-05-19 22:35:45,249 - INFO - ============================================================
+2026-05-19 22:35:45,249 - INFO - PIPELINE COMPLETADO EXITOSAMENTE
+2026-05-19 22:35:45,249 - INFO - Resultados en la carpeta '03_EDA_Resultados/'
+2026-05-19 22:35:45,249 - INFO - ============================================================

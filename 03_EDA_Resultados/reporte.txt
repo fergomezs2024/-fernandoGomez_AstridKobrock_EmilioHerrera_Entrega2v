@@ -1,0 +1,30 @@
+REPORTE - Prediccion de Incumplimiento de Prestamos
+============================================================
+
+PIPELINE DataOps
+----------------------------------------
+Etapa 1 - Ingesta: 0.05s
+Etapa 2 - Limpieza: 0.06s
+Etapa 3 - Validacion: 0.01s
+Etapa 4 - Carga: 0.29s
+Tiempo total: 0.41s
+
+KPIs DEL PIPELINE
+----------------------------------------
+Filas originales: 45000
+Filas despues de limpieza: 44993
+Filas descartadas: 7
+Completitud: 100.0%
+Errores de validacion: 0
+
+RESULTADOS DE LOS MODELOS
+----------------------------------------
+Arbol de Decision - Accuracy: 0.9128
+Regresion Logistica - Accuracy: 0.8854
+Mejor modelo: Arbol de Decision (0.9128)
+
+ANALISIS DE EQUIDAD
+----------------------------------------
+Accuracy male: 0.9154
+Accuracy female: 0.9095
+Diferencia: 0.0059
