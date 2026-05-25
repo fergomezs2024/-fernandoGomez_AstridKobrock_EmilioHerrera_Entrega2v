@@ -29,7 +29,7 @@ def test_columnas_esperadas():
 
 def test_validacion_rangos():
     df = pd.read_csv(DATOS_CSV)
-    assert df['person_age'].min() > 0, "Hay edades negativas"
+    assert df['person_age'].min() >= 18, "Hay edades menores a 18"
     assert df['loan_int_rate'].min() > 0, "Hay tasas de interes negativas"
     assert set(df['loan_status'].unique()).issubset({0, 1}), "loan_status debe ser 0 o 1"
 
