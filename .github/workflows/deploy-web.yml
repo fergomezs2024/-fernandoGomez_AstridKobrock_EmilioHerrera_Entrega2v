@@ -1,0 +1,67 @@
+# ============================================================
+# Despliegue automatico del dashboard en GitHub Pages
+# Prediccion de Incumplimiento de Prestamos - EV Parcial 3
+#
+# Que hace en cada push a main:
+#   1. Instala Python y dependencias.
+#   2. Ejecuta el pipeline (generar_metrics.py) EN LA NUBE
+#      -> entrena los modelos y produce site/metrics.json.
+#   3. Publica la carpeta site/ en GitHub Pages.
+#
+# Asi la web siempre refleja el ultimo entrenamiento (conexion
+# automatica pipeline -> datos -> web). Los logs de esta Action
+# son evidencia de ejecucion del pipeline en la nube.
+# ============================================================
+name: Desplegar dashboard (Pages)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:        # permite ejecutarlo a mano desde la pestania Actions
+
+# Permisos necesarios para publicar en Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita despliegues simultaneos
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Entrenar modelo y construir sitio
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Instalar Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalar dependencias
+        run: pip install pandas numpy scikit-learn
+
+      - name: Ejecutar pipeline y generar metrics.json
+        run: python 06_Despliegue_Web/generar_metrics.py
+
+      - name: Subir artefacto del sitio
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 06_Despliegue_Web/site
+
+  deploy:
+    name: Publicar en GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Desplegar a Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
